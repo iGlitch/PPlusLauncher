@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7EB2EFD8-F694-4976-8190-8D6091744968}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakePreprocessorDefinitions>DEBUG;_DEBUG;GEKKO;HW_RVL</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>make</NMakeBuildCommandLine>
+    <NMakeOutput>boot.elf</NMakeOutput>
+    <NMakeReBuildCommandLine>make clean &amp;&amp; make</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeIncludeSearchPath>
+    </NMakeIncludeSearchPath>
+    <ExecutablePath>C:\devkitPro\msys\bin;C:\devkitPro\devkitPPC\bin;C:\devkitPro\devkitPPC\powerpc-eabi\bin</ExecutablePath>
+    <IncludePath>C:\devkitPro\libogc\include;C:\devkitPro\devkitPPC\include;C:\devkitPro\devkitPPC\powerpc-eabi\include</IncludePath>
+    <ReferencePath />
+    <LibraryPath>$(ProjectDir)\lib;c:\devkitPro\libogc\lib\wii;C:\devkitPro\devkitPPC\lib;C:\devkitPro\devkitPPC\powerpc-eabi\lib</LibraryPath>
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\nintendon-t\loader\source\HID.c" />
+    <ClCompile Include="source\Audio\brstmplayer.cpp" />
+    <ClCompile Include="source\Audio\sfx.cpp" />
+    <ClCompile Include="source\BootHombrew.cpp" />
+    <ClCompile Include="source\Common.cpp" />
+    <ClCompile Include="source\FileHolder.cpp" />
+    <ClCompile Include="source\Graphics\AddonsScene.cpp" />
+    <ClCompile Include="source\Graphics\FreeTypeGX.cpp" />
+    <ClCompile Include="source\Graphics\GraphicsScene.cpp" />
+    <ClCompile Include="source\Graphics\Popup.cpp" />
+    <ClCompile Include="source\Graphics\MainMenuScene.cpp" />
+    <ClCompile Include="source\Graphics\TestScene.cpp" />
+    <ClCompile Include="source\Graphics\ToolsScene.cpp" />
+    <ClCompile Include="source\Graphics\CodesetScene.cpp" />
+    <ClCompile Include="source\Graphics\textures.cpp" />
+    <ClCompile Include="source\Graphics\UpdateScene.cpp" />
+    <ClCompile Include="source\Graphics\video.cpp" />
+    <ClCompile Include="source\IOSLoader\sys.c" />
+    <ClCompile Include="source\Launcher\apploader.c" />
+    <ClCompile Include="source\Launcher\disc.c" />
+    <ClCompile Include="source\Launcher\launcher.cpp" />
+    <ClCompile Include="source\Launcher\multidol.c" />
+    <ClCompile Include="source\Launcher\patchcode.c" />
+    <ClCompile Include="source\USB\usbadapter.cpp" />
+    <ClCompile Include="source\Launcher\videopatch.c" />
+    <ClCompile Include="source\Launcher\video_tinyload.c" />
+    <ClCompile Include="source\Launcher\wdvd.c" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Network\dns.cpp" />
+    <ClCompile Include="source\Network\http.cpp" />
+    <ClCompile Include="source\Network\networkloader.cpp" />
+    <ClCompile Include="source\Patching\7z\7ZipFile.cpp" />
+    <ClCompile Include="source\Patching\7z\CreateSubfolder.cpp" />
+    <ClCompile Include="source\Patching\7z\wstring.cpp" />
+    <ClCompile Include="source\Patching\AddonFile.cpp" />
+    <ClCompile Include="source\Patching\ApplyPatch.cpp" />
+    <ClCompile Include="source\Patching\ARC.cpp" />
+    <ClCompile Include="source\Patching\bspatch.cpp" />
+    <ClCompile Include="source\Patching\DirectoryISO.cpp" />
+    <ClCompile Include="source\Patching\DVDISO.cpp" />
+    <ClCompile Include="source\Patching\FrozenMemories.cpp" />
+    <ClCompile Include="source\Patching\fst_J.c" />
+    <ClCompile Include="source\Patching\fst_U.c" />
+    <ClCompile Include="source\Patching\ISOInterface.cpp" />
+    <ClCompile Include="source\Patching\md5.cpp" />
+    <ClCompile Include="source\Patching\NullISO.cpp" />
+    <ClCompile Include="source\Patching\Patcher.cpp" />
+    <ClCompile Include="source\Patching\tinyxml2.cpp" />
+    <ClCompile Include="source\Patching\xdelta3.c" />
+    <ClCompile Include="source\Profiler\profiler.c" />
+    <ClCompile Include="source\Profiler\timer.c" />
+    <ClCompile Include="source\tools.cpp" />
+    <ClCompile Include="source\USB\usblowlevel.c" />
+    <ClCompile Include="source\wiisd_libogc.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\Audio\brstmplayer.h" />
+    <ClInclude Include="source\Audio\sfx.h" />
+    <ClInclude Include="source\BootHomebrew.h" />
+    <ClInclude Include="source\Common.h" />
+    <ClInclude Include="source\FileHolder.h" />
+    <ClInclude Include="source\Graphics\AddonsScene.h" />
+    <ClInclude Include="source\Graphics\FreeTypeGX.h" />
+    <ClInclude Include="source\Graphics\GraphicsScene.h" />
+    <ClInclude Include="source\Graphics\Popup.h" />
+    <ClInclude Include="source\Graphics\MainMenuScene.h" />
+    <ClInclude Include="source\Graphics\TestScene.h" />
+    <ClInclude Include="source\Graphics\ToolsScene.h" />
+    <ClInclude Include="source\Graphics\CodesetScene.h" />
+    <ClInclude Include="source\Graphics\textures.h" />
+    <ClInclude Include="source\Graphics\UpdateScene.h" />
+    <ClInclude Include="source\Graphics\video.h" />
+    <ClInclude Include="source\IOSLoader\sys.h" />
+    <ClInclude Include="source\Launcher\apploader.h" />
+    <ClInclude Include="source\Launcher\codehandler.h" />
+    <ClInclude Include="source\Launcher\codehandleronly.h" />
+    <ClInclude Include="source\Launcher\disc.h" />
+    <ClInclude Include="source\Launcher\launcher.h" />
+    <ClInclude Include="source\Launcher\memory.h" />
+    <ClInclude Include="source\Launcher\multidol.h" />
+    <ClInclude Include="source\Launcher\patchcode.h" />
+    <ClInclude Include="source\USB\usbadapter.h" />
+    <ClInclude Include="source\Launcher\videopatch.h" />
+    <ClInclude Include="source\Launcher\video_tinyload.h" />
+    <ClInclude Include="source\Launcher\wdvd.h" />
+    <ClInclude Include="source\Network\dns.h" />
+    <ClInclude Include="source\Network\http.h" />
+    <ClInclude Include="source\Network\networkloader.h" />
+    <ClInclude Include="source\Patching\7z\7z.h" />
+    <ClInclude Include="source\Patching\7z\7zAlloc.h" />
+    <ClInclude Include="source\Patching\7z\7zBuf.h" />
+    <ClInclude Include="source\Patching\7z\7zCrc.h" />
+    <ClInclude Include="source\Patching\7z\7zFile.h" />
+    <ClInclude Include="source\Patching\7z\7ZipFile.h" />
+    <ClInclude Include="source\Patching\7z\7zVersion.h" />
+    <ClInclude Include="source\Patching\7z\Aes.h" />
+    <ClInclude Include="source\Patching\7z\Alloc.h" />
+    <ClInclude Include="source\Patching\7z\ArchiveStruct.h" />
+    <ClInclude Include="source\Patching\7z\Bcj2.h" />
+    <ClInclude Include="source\Patching\7z\Bra.h" />
+    <ClInclude Include="source\Patching\7z\BwtSort.h" />
+    <ClInclude Include="source\Patching\7z\CpuArch.h" />
+    <ClInclude Include="source\Patching\7z\CreateSubfolder.h" />
+    <ClInclude Include="source\Patching\7z\Delta.h" />
+    <ClInclude Include="source\Patching\7z\HuffEnc.h" />
+    <ClInclude Include="source\Patching\7z\LzFind.h" />
+    <ClInclude Include="source\Patching\7z\LzHash.h" />
+    <ClInclude Include="source\Patching\7z\Lzma2Dec.h" />
+    <ClInclude Include="source\Patching\7z\Lzma2Enc.h" />
+    <ClInclude Include="source\Patching\7z\LzmaDec.h" />
+    <ClInclude Include="source\Patching\7z\LzmaEnc.h" />
+    <ClInclude Include="source\Patching\7z\LzmaLib.h" />
+    <ClInclude Include="source\Patching\7z\Ppmd.h" />
+    <ClInclude Include="source\Patching\7z\Ppmd7.h" />
+    <ClInclude Include="source\Patching\7z\Ppmd8.h" />
+    <ClInclude Include="source\Patching\7z\RotateDefs.h" />
+    <ClInclude Include="source\Patching\7z\Sha256.h" />
+    <ClInclude Include="source\Patching\7z\Sort.h" />
+    <ClInclude Include="source\Patching\7z\Types.h" />
+    <ClInclude Include="source\Patching\7z\wstring.hpp" />
+    <ClInclude Include="source\Patching\7z\Xz.h" />
+    <ClInclude Include="source\Patching\7z\XzCrc64.h" />
+    <ClInclude Include="source\Patching\7z\XzEnc.h" />
+    <ClInclude Include="source\Patching\AddonFile.h" />
+    <ClInclude Include="source\Patching\ApplyPatch.h" />
+    <ClInclude Include="source\Patching\ARC.h" />
+    <ClInclude Include="source\Patching\bspatch.h" />
+    <ClInclude Include="source\Patching\DirectoryISO.h" />
+    <ClInclude Include="source\Patching\DVDISO.h" />
+    <ClInclude Include="source\Patching\FrozenMemories.h" />
+    <ClInclude Include="source\Patching\fst_J.h" />
+    <ClInclude Include="source\Patching\fst_U.h" />
+    <ClInclude Include="source\Patching\ISOInterface.h" />
+    <ClInclude Include="source\Patching\md5.h" />
+    <ClInclude Include="source\Patching\NullISO.h" />
+    <ClInclude Include="source\Patching\Patcher.h" />
+    <ClInclude Include="source\Patching\stdafx.h" />
+    <ClInclude Include="source\Patching\tinyxml2.h" />
+    <ClInclude Include="source\Patching\xdelta3-blkcache.h" />
+    <ClInclude Include="source\Patching\xdelta3-cfgs.h" />
+    <ClInclude Include="source\Patching\xdelta3-decode.h" />
+    <ClInclude Include="source\Patching\xdelta3-djw.h" />
+    <ClInclude Include="source\Patching\xdelta3-fgk.h" />
+    <ClInclude Include="source\Patching\xdelta3-hash.h" />
+    <ClInclude Include="source\Patching\xdelta3-internal.h" />
+    <ClInclude Include="source\Patching\xdelta3-list.h" />
+    <ClInclude Include="source\Patching\xdelta3-lzma.h" />
+    <ClInclude Include="source\Patching\xdelta3-main.h" />
+    <ClInclude Include="source\Patching\xdelta3-merge.h" />
+    <ClInclude Include="source\Patching\xdelta3-second.h" />
+    <ClInclude Include="source\Patching\xdelta3-test.h" />
+    <ClInclude Include="source\Patching\xdelta3.h" />
+    <ClInclude Include="source\Profiler\profiler.h" />
+    <ClInclude Include="source\Profiler\timer.h" />
+    <ClInclude Include="source\Profiler\types.h" />
+    <ClInclude Include="source\tools.h" />
+    <ClInclude Include="source\wiisd_libogc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\backgroundtile.png" />
+    <Image Include="textures\logo.png" />
+    <Image Include="textures\scene0About.png" />
+    <Image Include="textures\scene0Exit.png" />
+    <Image Include="textures\scene0Install.png" />
+    <Image Include="textures\scene0Play.png" />
+    <Image Include="textures\scene0Tools.png" />
+    <Image Include="textures\scene0Update.png" />
+    <Image Include="textures\scene1back.png" />
+    <Image Include="textures\scene1checkforupdates.png" />
+    <Image Include="textures\scene1installchannel.png" />
+    <Image Include="textures\scene1repairfiles.png" />
+    <Image Include="textures\stylishm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\app_booter.bin" />
+    <None Include="data\sfx_back.pcm" />
+    <None Include="data\sfx_confirm.pcm" />
+    <None Include="data\sfx_select.pcm" />
+    <None Include="textures\en_tex_menus.scf" />
+    <None Include="textures\tex_addons.scf" />
+    <None Include="textures\tex_default.scf" />
+    <None Include="textures\tex_logo.scf" />
+    <None Include="textures\tex_scene0.scf" />
+    <None Include="textures\tex_scene1.scf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="data\vera_bold.ttf" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

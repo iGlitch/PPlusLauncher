@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{90b3e12b-5f49-4068-80e2-b847db614a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Audio">
+      <UniqueIdentifier>{b39756f2-217e-43a4-9b21-7a3c74bf0f7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Graphics">
+      <UniqueIdentifier>{97b47970-ed87-408f-bf76-275ff7da87d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Network">
+      <UniqueIdentifier>{fa7697a9-c534-451d-a676-ee83320a6e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Launcher">
+      <UniqueIdentifier>{459e422f-902d-4593-ab25-dcb347e1cd4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Profiler">
+      <UniqueIdentifier>{9921f26f-eb85-484a-825f-676f39728ac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Patching">
+      <UniqueIdentifier>{3fa65b47-a72f-4530-87dc-f66b9f361a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="textures">
+      <UniqueIdentifier>{ef8e5fab-8135-4372-ac81-c0165e54ed9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{699e8f82-4949-4718-84a8-3a27a4f98d2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\IOSLoader">
+      <UniqueIdentifier>{bd49c747-a25c-4759-8419-bfaba601ad6e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Audio\brstmplayer.cpp">
+      <Filter>source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Audio\sfx.cpp">
+      <Filter>source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\FreeTypeGX.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\textures.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\UpdateScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\video.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\apploader.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\disc.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\launcher.cpp">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\multidol.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\patchcode.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\videopatch.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\video_tinyload.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Launcher\wdvd.c">
+      <Filter>source\Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Network\networkloader.cpp">
+      <Filter>source\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\7z\7ZipFile.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\7z\CreateSubfolder.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\7z\wstring.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\ApplyPatch.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\ARC.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\DirectoryISO.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\DVDISO.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\FrozenMemories.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\fst_J.c">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\fst_U.c">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\ISOInterface.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\md5.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\NullISO.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\Patcher.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\tinyxml2.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Profiler\profiler.c">
+      <Filter>source\Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Profiler\timer.c">
+      <Filter>source\Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BootHombrew.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Common.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FileHolder.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\IOSLoader\sys.c">
+      <Filter>source\IOSLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\xdelta3.c">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\bspatch.cpp">
+      <Filter>source\Patching</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tools.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\Popup.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wiisd_libogc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\MainMenuScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\ToolsScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\GraphicsScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\CodesetScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Network\http.cpp">
+      <Filter>source\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Network\dns.cpp">
+      <Filter>source\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Graphics\AddonsScene.cpp">
+      <Filter>source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Patching\AddonFile.cpp" />
+    <ClCompile Include="source\Graphics\TestScene.cpp" />
+    <ClCompile Include="..\..\nintendon-t\loader\source\HID.c" />
+    <ClCompile Include="source\USB\usbadapter.cpp" />
+    <ClCompile Include="source\USB\usblowlevel.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\Audio\brstmplayer.h">
+      <Filter>source\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Audio\sfx.h">
+      <Filter>source\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\FreeTypeGX.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\textures.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\UpdateScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\video.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\apploader.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\codehandler.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\codehandleronly.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\disc.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\launcher.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\memory.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\multidol.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\patchcode.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\videopatch.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\video_tinyload.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Launcher\wdvd.h">
+      <Filter>source\Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Network\dns.h">
+      <Filter>source\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Network\http.h">
+      <Filter>source\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Network\networkloader.h">
+      <Filter>source\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7z.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7zAlloc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7zBuf.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7zCrc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7zFile.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7ZipFile.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\7zVersion.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Aes.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Alloc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\ArchiveStruct.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Bcj2.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Bra.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\BwtSort.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\CpuArch.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\CreateSubfolder.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Delta.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\HuffEnc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\LzFind.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\LzHash.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Lzma2Dec.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Lzma2Enc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\LzmaDec.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\LzmaEnc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\LzmaLib.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Ppmd.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Ppmd7.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Ppmd8.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\RotateDefs.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Sha256.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Sort.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Types.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\wstring.hpp">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\Xz.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\XzCrc64.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\7z\XzEnc.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\ApplyPatch.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\ARC.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\bspatch.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\DirectoryISO.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\DVDISO.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\FrozenMemories.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\fst_J.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\fst_U.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\ISOInterface.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\md5.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\NullISO.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\Patcher.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\stdafx.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\tinyxml2.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Profiler\profiler.h">
+      <Filter>source\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Profiler\timer.h">
+      <Filter>source\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Profiler\types.h">
+      <Filter>source\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BootHomebrew.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Common.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\FileHolder.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\IOSLoader\sys.h">
+      <Filter>source\IOSLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-blkcache.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-cfgs.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-decode.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-djw.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-fgk.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-hash.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-internal.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-list.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-lzma.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-main.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-merge.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-second.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\xdelta3-test.h">
+      <Filter>source\Patching</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tools.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\Popup.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\wiisd_libogc.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\MainMenuScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\ToolsScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\GraphicsScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\CodesetScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Graphics\AddonsScene.h">
+      <Filter>source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Patching\AddonFile.h" />
+    <ClInclude Include="source\Graphics\TestScene.h" />
+    <ClInclude Include="source\USB\usbadapter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\scene0Play.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene0Tools.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene0Update.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene1back.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene1checkforupdates.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene1installchannel.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene1repairfiles.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\stylishm.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\backgroundtile.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\logo.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene0About.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene0Exit.png">
+      <Filter>textures</Filter>
+    </Image>
+    <Image Include="textures\scene0Install.png">
+      <Filter>textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="textures\tex_default.scf">
+      <Filter>textures</Filter>
+    </None>
+    <None Include="textures\tex_logo.scf">
+      <Filter>textures</Filter>
+    </None>
+    <None Include="textures\tex_scene0.scf">
+      <Filter>textures</Filter>
+    </None>
+    <None Include="textures\tex_scene1.scf">
+      <Filter>textures</Filter>
+    </None>
+    <None Include="data\sfx_back.pcm">
+      <Filter>data</Filter>
+    </None>
+    <None Include="data\sfx_confirm.pcm">
+      <Filter>data</Filter>
+    </None>
+    <None Include="data\sfx_select.pcm">
+      <Filter>data</Filter>
+    </None>
+    <None Include="data\app_booter.bin">
+      <Filter>data</Filter>
+    </None>
+    <None Include="textures\tex_addons.scf" />
+    <None Include="textures\en_tex_menus.scf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="data\vera_bold.ttf">
+      <Filter>data</Filter>
+    </Font>
+  </ItemGroup>
+</Project>
