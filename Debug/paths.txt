@@ -1,0 +1,7 @@
+C:\base
+C:\patch
+C:\output
+C:\RSBE
+0
+0
+0
