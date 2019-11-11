@@ -895,7 +895,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	//not precise though
 	printf("Elapsed time: %d min %d sec", pfin.tm_min - pnow.tm_min, pfin.tm_sec - pnow.tm_sec);
 
-	system("pause");
 	return 0;
 }
 

@@ -1,7 +1,5 @@
 C:\base
 C:\patch
-C:\output
+output
 C:\RSBE
-0
-0
-0
+http://
