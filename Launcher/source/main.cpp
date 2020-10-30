@@ -201,7 +201,7 @@ void setConfigBoolValue(tinyxml2::XMLElement * xe, bool & setting)
 
 void loadConfigFile()
 {
-	FileHolder configFile("sd:/projectm/launcher/config.xml", "r");
+	FileHolder configFile("sd:/Project+/launcher/config.xml", "r");
 	if (configFile.IsOpen())
 	{
 		configFileSize = configFile.Size();
@@ -385,7 +385,7 @@ int main(int argc, char **argv)
 	BrstmPlayer* pMusicPlayer;
 	if (useMusic)
 	{
-		FileHolder brstmFile("sd:/projectm/launcher/menu_music.brstm", "rb");
+		FileHolder brstmFile("sd:/Project+/launcher/menu_music.brstm", "rb");
 		if (brstmFile.IsOpen())
 		{
 			int len = brstmFile.Size();

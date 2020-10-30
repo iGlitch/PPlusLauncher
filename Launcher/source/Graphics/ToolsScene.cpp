@@ -64,15 +64,15 @@ void CToolsScene::Load()
 
 
 	char line2[50];
-	sprintf(line2, "Project M Version: %s", projectMVersion);
+	sprintf(line2, "Project + Version: %s", projectMVersion);
 	aboutLine2Text = charToWideChar(line2);
 
 	
 
 	//aboutLine2Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
 	//aboutLine3Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
-	//sprintf(aboutLine2Text, "Project M Version: %s", projectMVersion);
-	//sprintf(aboutLine3Text, "Project M Codeset: %s", projectMCodeset);
+	//sprintf(aboutLine2Text, "Project + Version: %s", projectMVersion);
+	//sprintf(aboutLine3Text, "Project + Codeset: %s", projectMCodeset);
 
 	aboutPopup->setLineTextItems(2, L"Launcher Version: 1.0", aboutLine2Text);
 
