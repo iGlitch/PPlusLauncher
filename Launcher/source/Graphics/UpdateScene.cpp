@@ -1163,7 +1163,7 @@ void CUpdateScene::drawProgressBar()
 	height = initialSizeRatio * finalHeight + ((1.0f - initialSizeRatio) * finalHeight * animationRatio);
 
 	Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 0, 0, 0, u8(178 * animationRatio) }, true);
-	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
+	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 163, 255, 224, u8(255 * animationRatio) }, true);
 
 	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
 }

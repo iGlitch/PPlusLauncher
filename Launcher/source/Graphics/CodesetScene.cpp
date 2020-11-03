@@ -298,7 +298,7 @@ void CPatchScene::drawProgressBar()
 	height = initialSizeRatio * finalHeight + ((1.0f - initialSizeRatio) * finalHeight * animationRatio);
 
 	Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 0, 0, 0, u8(178 * animationRatio) }, true);
-	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
+	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 163, 255, 224, u8(255 * animationRatio) }, true);
 
 	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
 }
@@ -335,7 +335,7 @@ void CPatchScene::drawCancelPopup()
 
 	if (cancelPopupSelectedIndex == 0)
 	{
-		Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 165, 184, 255, u8(255 * popupAanimationRatio) }, true);
+		Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 163, 255, 224, u8(255 * popupAanimationRatio) }, true);
 		fontSystem[16]->drawText(xPos + (width / 4.0f), yPos + (height * (textAreaRatio + ((1 - textAreaRatio) * 0.50f))), L"Yes", (GXColor){ 0, 0, 0, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER | FTGX_ALIGN_MIDDLE);
 	}
 	else
@@ -343,7 +343,7 @@ void CPatchScene::drawCancelPopup()
 
 	if (cancelPopupSelectedIndex == 1)
 	{
-		Menu_DrawRectangle(xPos + (width / 2.0f), yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 165, 184, 255, u8(255 * popupAanimationRatio) }, true);
+		Menu_DrawRectangle(xPos + (width / 2.0f), yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 163, 255, 224, u8(255 * popupAanimationRatio) }, true);
 		fontSystem[16]->drawText(xPos + (width / 4.0f) + (width / 2.0f), yPos + (height * (textAreaRatio + ((1 - textAreaRatio) * 0.50f))), L"No", (GXColor){ 0, 0, 0, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER | FTGX_ALIGN_MIDDLE);
 	}
 	else

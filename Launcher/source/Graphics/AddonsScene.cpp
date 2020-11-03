@@ -231,7 +231,7 @@ void CAddonsScene::drawSelectionMenu(float yPos)
 		for (int i = initialPosition; i < endPosition; i++)
 		{
 			if (m_iMenuSelectedIndex == i)
-				Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
+				Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ 163, 255, 224, u8(255 * animationRatio) }, true);
 
 			AddonFile * f = addonFiles[i];
 			ChangeFontSize(18);
