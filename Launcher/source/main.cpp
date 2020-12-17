@@ -180,6 +180,7 @@ bool useMusic = true;
 bool useFonts = true;
 bool useDefaultTextures = true;
 bool useMenus = true;
+bool minima = true;
 
 void setConfigBoolValue(tinyxml2::XMLElement * xe, bool & setting)
 {
@@ -256,6 +257,7 @@ void loadConfig()
 					setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
 					setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
 					setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
+					setConfigBoolValue(cur->FirstChildElement("minima"), minima);
 				}
 
 				if (IsDolphin())
@@ -270,6 +272,7 @@ void loadConfig()
 					setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
 					setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
 					setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
+					setConfigBoolValue(cur->FirstChildElement("minima"), minima);
 				}
 			}
 		}
@@ -306,38 +309,36 @@ int main(int argc, char **argv)
 	loadInfoFile();
 	loadConfig();
 
-	if (useGCPads)
-	{
-		PAD_Init();
-
-		PAD_ScanPads();
-		u32 gcPressed(0);
-		for (int i(0); i < PAD_CHANMAX; ++i) gcPressed |= PAD_ButtonsHeld(i);
-		if ((gcPressed & PAD_TRIGGER_L)
-			&& (gcPressed & PAD_BUTTON_A)
-			&& (gcPressed & PAD_TRIGGER_Z)
-			&& (gcPressed & PAD_BUTTON_Y))
-			LaunchTitle();
-	}
-
-	if (useWiiPads)
-	{
-		WPAD_Init();
-
-		WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
-
-		WPAD_SetIdleTimeout(60 * 5); // idle after 5 minutes
-
-	}
+	WPAD_Init();
+    WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
+    WPAD_SetIdleTimeout(60 * 5); // idle after 5 minutes
+	WPAD_SetVRes(WPAD_CHAN_0, fScreenWidth, fScreenHeight);
+    PAD_Init();
 
 	if (useVideo)
 	{
 		InitVideo();
 		fScreenWidth = getScreenWidth();
 		fScreenHeight = getScreenHeight();
-		if (useWiiPads)
-		{
-			WPAD_SetVRes(WPAD_CHAN_0, fScreenWidth, fScreenHeight);
+		sleep(3);
+	}
+	
+	if (minima)
+	{
+		while(1){
+			PAD_ScanPads();
+			WPAD_ScanPads();
+			u32 pad_down = PAD_ButtonsDown(0) | PAD_ButtonsDown(1) | PAD_ButtonsDown(2) | PAD_ButtonsDown(3);
+			u32 wpad_down = WPAD_ButtonsDown(0) | WPAD_ButtonsDown(1) | WPAD_ButtonsDown(2) | WPAD_ButtonsDown(3);
+		if ((wpad_down & WPAD_BUTTON_A) || (pad_down & PAD_BUTTON_A)){break;} 
+		else {
+		//DeinitFreeType();
+		StopGX();
+		//WPAD_Shutdown();
+		//Network_Stop();
+		LaunchTitle();
+		//break;
+			}
 		}
 	}
 
@@ -530,7 +531,7 @@ int main(int argc, char **argv)
 		usleep(100);
 		printf("Starting async\n");*/
 		USBAdapter_ReadBackground();
-		printf("Launching Title\n");
+		//printf("Launching Title\n");
 		LaunchTitle();
 	}
 	else if (eNextScene == SCENE_LAUNCHELF)
@@ -538,10 +539,10 @@ int main(int argc, char **argv)
 		if (useUSBAdapter)
 			USBAdapter_Stop();
 		ClearArguments();
-		AddBootArgument("sd:/boot.elf");
+		AddBootArgument("sd:/apps/projplus/cfg.dol");
 		FreeHomebrewBuffer();
 
-		FileHolder fBootElf("sd:/boot.elf", "rb");
+		FileHolder fBootElf("sd:/apps/projplus/cfg.dol", "rb");
 		if (!fBootElf.IsOpen())
 			return 0;
 		int len = fBootElf.Size();
