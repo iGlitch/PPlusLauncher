@@ -539,10 +539,10 @@ int main(int argc, char **argv)
 		if (useUSBAdapter)
 			USBAdapter_Stop();
 		ClearArguments();
-		AddBootArgument("sd:/apps/projplus/cfg.dol");
+		AddBootArgument("sd:/apps/projplus/usb.dol");
 		FreeHomebrewBuffer();
 
-		FileHolder fBootElf("sd:/apps/projplus/cfg.dol", "rb");
+		FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
 		if (!fBootElf.IsOpen())
 			return 0;
 		int len = fBootElf.Size();
