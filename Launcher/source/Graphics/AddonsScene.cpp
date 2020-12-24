@@ -351,8 +351,8 @@ bool CAddonsScene::Work()
 		swprintf(sInfoText, 255, L"Searching for local addons...");
 		struct dirent *pent;
 		struct stat statbuf;
-		CreateSubfolder("sd:/projectm/launcher/addons");
-		DIR * addonsFolder = opendir("sd:/projectm/launcher/addons/");
+		CreateSubfolder("sd:/Project+/launcher/addons");
+		DIR * addonsFolder = opendir("sd:/Project+/launcher/addons/");
 		bool foundItems = false;
 		addonFiles.clear();
 		while ((pent = readdir(addonsFolder)) != NULL) {
@@ -372,7 +372,7 @@ bool CAddonsScene::Work()
 
 
 			char fullFilePath[255];
-			sprintf(fullFilePath, "sd:/projectm/launcher/addons/%s", pent->d_name);
+			sprintf(fullFilePath, "sd:/Project+/launcher/addons/%s", pent->d_name);
 
 			AddonFile* f = new AddonFile(fullFilePath);
 

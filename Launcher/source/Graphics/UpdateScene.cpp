@@ -404,7 +404,7 @@ bool CUpdateScene::Work()
 	//if (showConfirmLaunchPopup)return false;
 	m_eNextScreen = SCENE_MAIN_MENU;
 	swprintf(sInfoText, 255, L"Reading local info.xml file...");
-	//Look for sd:/projectm/info.xml
+	//Look for sd:/Project+/info.xml
 	f32 pmCurrentVersion = 0.0f;
 	f32 launcherCurrentVersion = g_LauncherVersion;
 
@@ -449,7 +449,7 @@ bool CUpdateScene::Work()
 		launcherUpdateVersion = 0.0f;
 		struct dirent *pent;
 		struct stat statbuf;
-		DIR * pmUpdateFolder = opendir("sd:/projectm/launcher/updates/");
+		DIR * pmUpdateFolder = opendir("sd:/Project+/launcher/updates/");
 		while ((pent = readdir(pmUpdateFolder)) != NULL) {
 			stat(pent->d_name, &statbuf);
 			if (strcmp(".", pent->d_name) == 0 ||
@@ -525,7 +525,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/projectm/launcher/updates/%s", launcherUpdateFileName);
+				sprintf(fullFilePath, "sd:/Project+/launcher/updates/%s", launcherUpdateFileName);
 
 
 				if (m_bCancelUpdate)
@@ -564,7 +564,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/projectm/launcher/updates/%s", pmUpdateFileName);
+				sprintf(fullFilePath, "sd:/Project+/launcher/updates/%s", pmUpdateFileName);
 				if (!PMPatchVerify(fullFilePath, sInfoText, m_bCancelUpdate, fProgressPercentage))
 				{
 					m_bInstallUpdate = false;
@@ -784,10 +784,10 @@ bool CUpdateScene::Work()
 								fileNameLength++;
 							}
 							const char * fileName = offset;
-							//char directoryPath = "/projectm/launcher/updates/"; // fix this bane :)
+							//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
 							char fullPath[fileNameLength + 27]; ///why use strlen? i can count!
-							sprintf(fullPath, "sd:/projectm/launcher/updates/%s", fileName);
-							CreateSubfolder("sd:/projectm/launcher/updates/");
+							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
+							CreateSubfolder("sd:/Project+/launcher/updates/");
 
 							FileHolder localUpdateFile(fullPath, "wb");
 							if (!localUpdateFile.IsOpen())
@@ -960,10 +960,10 @@ bool CUpdateScene::Work()
 							fileNameLength++;
 						}
 						const char * fileName = offset;
-						//char directoryPath = "/projectm/launcher/updates/"; // fix this bane :)
+						//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
 						char tmpPath[255]; ///why use strlen? i can count! EDIT: NOPE!
-						sprintf(tmpPath, "sd:/projectm/launcher/updates/%s.tmp", fileName);
-						CreateSubfolder("sd:/projectm/launcher/updates/");
+						sprintf(tmpPath, "sd:/Project+/launcher/updates/%s.tmp", fileName);
+						CreateSubfolder("sd:/Project+/launcher/updates/");
 						char *tmpPathPointer = tmpPath;
 
 						remove(tmpPath);
@@ -1024,7 +1024,7 @@ bool CUpdateScene::Work()
 							fProgressPercentage = 0.0f;
 
 							char fullPath[255]; ///why use strlen? i can count! EDIT: NOPE! I CAN'T!
-							sprintf(fullPath, "sd:/projectm/launcher/updates/%s", fileName);
+							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
 							remove(fullPath);
 							fProgressPercentage = 0.5f;
 							rename(tmpPath, fullPath);
