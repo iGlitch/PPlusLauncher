@@ -68,7 +68,7 @@ void ToLower(const char* str, char* buf)
 
 void loadInfoFile()
 {
-	FileHolder infoFile("sd:/Project+/info.xml", "r");
+	FileHolder infoFile("sd:/projectm/info.xml", "r");
 	if (infoFile.IsOpen())
 	{
 		if (infoFileSize != 0)

@@ -248,9 +248,9 @@ int AddonFile::Install(){
 			{
 
 
-				CreateSubfolder("sd:/Project+/launcher/addons/backups");
+				CreateSubfolder("sd:/projectm/launcher/addons/backups");
 				char backupLocation[256];
-				sprintf(backupLocation, "sd:/Project+/launcher/addons/backups/%s", GetFileName(destinationFile));
+				sprintf(backupLocation, "sd:/projectm/launcher/addons/backups/%s", GetFileName(destinationFile));
 				FILE * fpBackUpFileCheck = fopen(backupLocation, "rb");
 				if (fpBackUpFileCheck == NULL)
 				{
@@ -437,9 +437,9 @@ int AddonFile::Uninstall(){
 			continue;
 
 
-		CreateSubfolder("sd:/Project+/launcher/addons/backups");
+		CreateSubfolder("sd:/projectm/launcher/addons/backups");
 		char backupLocation[256];
-		sprintf(backupLocation, "sd:/Project+/launcher/addons/backups/%s", GetFileName(destinationFile));
+		sprintf(backupLocation, "sd:/projectm/launcher/addons/backups/%s", GetFileName(destinationFile));
 
 		FILE * fpBackUpFile = fopen(backupLocation, "rb");
 		if (fpBackUpFile != NULL)
@@ -504,7 +504,7 @@ bool AddonFile::logRestoredFile(const char * fileName){
 	tinyxml2::XMLElement* xeFiles;
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
+	if (statusDoc.LoadFile("sd:/projectm/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
 	{
 		xeRoot = statusDoc.RootElement();
 		if (xeRoot == NULL)
@@ -541,7 +541,7 @@ bool AddonFile::logRestoredFile(const char * fileName){
 	if (!foundFileName)
 		return true;
 
-	FILE * statusXML = fopen("sd:/Project+/launcher/addons/status.xml", "wb");
+	FILE * statusXML = fopen("sd:/projectm/launcher/addons/status.xml", "wb");
 	int ret = 1;
 	if (statusXML != NULL)
 	{
@@ -562,7 +562,7 @@ bool AddonFile::logChangedFile(const char * fileName){
 	tinyxml2::XMLElement* xeFiles;
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
+	if (statusDoc.LoadFile("sd:/projectm/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
 	{
 		xeRoot = statusDoc.RootElement();
 		if (xeRoot == NULL)
@@ -608,7 +608,7 @@ bool AddonFile::logChangedFile(const char * fileName){
 		xeFile->SetAttribute("code", code);
 		xeFiles->InsertEndChild(xeFile);
 	}
-	FILE * statusXML = fopen("sd:/Project+/launcher/addons/status.xml", "wb");
+	FILE * statusXML = fopen("sd:/projectm/launcher/addons/status.xml", "wb");
 	int ret = 1;
 	if (statusXML != NULL)
 	{
@@ -625,7 +625,7 @@ int AddonFile::CheckState()
 
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
+	if (statusDoc.LoadFile("sd:/projectm/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
 	{
 		state = ADDON_FILE_STATE_NOT_INSTALLED;
 		return -2;
@@ -695,7 +695,7 @@ int AddonFile::checkIfChanged(const char * fileName)
 
 	tinyxml2::XMLDocument doc;
 
-	if (doc.LoadFile("sd:/Project+/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
+	if (doc.LoadFile("sd:/projectm/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
 		return -2;
 
 

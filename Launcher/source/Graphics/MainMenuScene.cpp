@@ -42,7 +42,7 @@ void CMainMenuScene::Load()
 	installPopup = new Popup(screenwidth, screenheight, 0.90f, 0.55f, 0.40f, 0.75f);
 	installPopup->setAnimationFrames(15, true);
 	installPopup->setSelectionTextItems(0, 2, L"Yes", L"No");
-	installPopup->setLineTextItems(3, L"Install Project + to your SD card?", L"No Wii system files will be modified.", L"Installation can take up to 15 minutes.");
+	installPopup->setLineTextItems(3, L"Install Project M to your SD card?", L"No Wii system files will be modified.", L"Installation can take up to 15 minutes.");
 
 	char projectMVersion[20] = "Unknown";
 
@@ -77,7 +77,7 @@ void CMainMenuScene::Load()
 
 
 	swprintf(aboutLine1Text, 50, L"Launcher Version: %4.2f", g_LauncherVersion);
-	swprintf(aboutLine2Text, 50, L"Project + Version: %s", projectMVersion);
+	swprintf(aboutLine2Text, 50, L"Project M Version: %s", projectMVersion);
 
 
 	aboutPopup->setLineTextItems(2, aboutLine1Text, aboutLine2Text);
@@ -278,14 +278,14 @@ void CMainMenuScene::Draw()
 		drawInfoBox(yPos + offset, 36.0F, L"");
 		break;
 	case 0:
-		drawInfoBox(yPos + offset, 36.0F, L"Play Project +. A copy of Super Smash Bros. Brawl is required.");
+		drawInfoBox(yPos + offset, 36.0F, L"Play Project M. A copy of Super Smash Bros. Brawl is required.");
 		break;
 	case 1:
 		drawInfoBox(yPos + offset, 36.0F, L"Check for updates.");
 		break;
 	case 2:
-		drawInfoBox(yPos + offset, 36.0F, L"Configure Project + Addons.");
-		//drawInfoBox(yPos + offset, 36.0F, L"Access a wide array of tools to enhance your Project + experience.");
+		drawInfoBox(yPos + offset, 36.0F, L"Configure Project M Addons.");
+		//drawInfoBox(yPos + offset, 36.0F, L"Access a wide array of tools to enhance your Project M experience.");
 		break;
 	case 3:
 		if (IsDolphin())

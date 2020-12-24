@@ -231,7 +231,7 @@ void CAddonsScene::drawSelectionMenu(float yPos)
 		for (int i = initialPosition; i < endPosition; i++)
 		{
 			if (m_iMenuSelectedIndex == i)
-				Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ 163, 255, 224, u8(255 * animationRatio) }, true);
+				Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
 
 			AddonFile * f = addonFiles[i];
 			ChangeFontSize(18);
@@ -351,8 +351,8 @@ bool CAddonsScene::Work()
 		swprintf(sInfoText, 255, L"Searching for local addons...");
 		struct dirent *pent;
 		struct stat statbuf;
-		CreateSubfolder("sd:/Project+/launcher/addons");
-		DIR * addonsFolder = opendir("sd:/Project+/launcher/addons/");
+		CreateSubfolder("sd:/projectm/launcher/addons");
+		DIR * addonsFolder = opendir("sd:/projectm/launcher/addons/");
 		bool foundItems = false;
 		addonFiles.clear();
 		while ((pent = readdir(addonsFolder)) != NULL) {
@@ -372,7 +372,7 @@ bool CAddonsScene::Work()
 
 
 			char fullFilePath[255];
-			sprintf(fullFilePath, "sd:/Project+/launcher/addons/%s", pent->d_name);
+			sprintf(fullFilePath, "sd:/projectm/launcher/addons/%s", pent->d_name);
 
 			AddonFile* f = new AddonFile(fullFilePath);
 

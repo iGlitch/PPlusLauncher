@@ -692,7 +692,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 		}
 		else if (strcasecmp(patchMethod, "add") == 0)
 		{
-			//<file method="add" updateFile="info/portrite/InfFace127.brres" destinationFile="/Project+/pf/info/portrite/InfFace127.brres" destinationMD5="817fea2c2cae0f775ac9d3bbe3fb229c"/>
+			//<file method="add" updateFile="info/portrite/InfFace127.brres" destinationFile="/projectm/pf/info/portrite/InfFace127.brres" destinationMD5="817fea2c2cae0f775ac9d3bbe3fb229c"/>
 			const char * updateFile = cur->Attribute("updateFile");
 			const char * destinationFile = cur->Attribute("destinationFile");
 			const char * destinationMD5 = cur->Attribute("destinationMD5");

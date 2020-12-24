@@ -18,7 +18,7 @@
 #include "wdvd.h"
 #include "video_tinyload.h"
 
-#define GAMECONFIG		"sd:/Project+/gc.txt"
+#define GAMECONFIG		"sd:/gameconfig.txt"
 
 
 u8 config_bytes[16] ATTRIBUTE_ALIGN(32);
@@ -390,7 +390,7 @@ void sd_copy_codes(char *filename) {
 	fflush(stdout);
 
 
-	sprintf(filepath, "sd:/Project+/%s.gct", filename);
+	sprintf(filepath, "sd:/codes/%s.gct", filename);
 
 	fp = fopen(filepath, "rb");
 	if (!fp) {

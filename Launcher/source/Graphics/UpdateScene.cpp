@@ -70,7 +70,7 @@ void CUpdateScene::Load()
 	infoFileMissingPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
 	infoFileMissingPopup->setAnimationFrames(15, true);
 	infoFileMissingPopup->setSelectionTextItems(0, 2, L"Yes", L"No");
-	infoFileMissingPopup->setLineTextItems(3, L"The Project + info.xml file was not", L"found. Do you have an unmodified ", L"installation of Project + 3.0?");
+	infoFileMissingPopup->setLineTextItems(3, L"The Project M info.xml file was not", L"found. Do you have an unmodified ", L"installation of Project M 3.0?");
 
 	showCancelPopup = false;
 	cancelPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
@@ -404,7 +404,7 @@ bool CUpdateScene::Work()
 	//if (showConfirmLaunchPopup)return false;
 	m_eNextScreen = SCENE_MAIN_MENU;
 	swprintf(sInfoText, 255, L"Reading local info.xml file...");
-	//Look for sd:/Project+/info.xml
+	//Look for sd:/projectm/info.xml
 	f32 pmCurrentVersion = 0.0f;
 	f32 launcherCurrentVersion = g_LauncherVersion;
 
@@ -449,7 +449,7 @@ bool CUpdateScene::Work()
 		launcherUpdateVersion = 0.0f;
 		struct dirent *pent;
 		struct stat statbuf;
-		DIR * pmUpdateFolder = opendir("sd:/Project+/launcher/updates/");
+		DIR * pmUpdateFolder = opendir("sd:/projectm/launcher/updates/");
 		while ((pent = readdir(pmUpdateFolder)) != NULL) {
 			stat(pent->d_name, &statbuf);
 			if (strcmp(".", pent->d_name) == 0 ||
@@ -525,7 +525,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/Project+launcher/updates/%s", launcherUpdateFileName);
+				sprintf(fullFilePath, "sd:/projectm/launcher/updates/%s", launcherUpdateFileName);
 
 
 				if (m_bCancelUpdate)
@@ -556,7 +556,7 @@ bool CUpdateScene::Work()
 		if (pmUpdateVersion != 0.0f)
 		{
 			swprintf(sInfoText, 255, L"Local update found: %s", pmUpdateFileName);
-			swprintf(confirmUpdateLine3Text, 50, L"Project +: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
+			swprintf(confirmUpdateLine3Text, 50, L"Project M: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
 			m_bInstallUpdate = false;
 			showConfirmUpdatePopup = true;
 			while (showConfirmUpdatePopup && !m_bCancelUpdate)
@@ -564,7 +564,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/Project+/launcher/updates/%s", pmUpdateFileName);
+				sprintf(fullFilePath, "sd:/projectm/launcher/updates/%s", pmUpdateFileName);
 				if (!PMPatchVerify(fullFilePath, sInfoText, m_bCancelUpdate, fProgressPercentage))
 				{
 					m_bInstallUpdate = false;
@@ -583,7 +583,7 @@ bool CUpdateScene::Work()
 				if (m_bCancelUpdate)
 					return false;
 
-				swprintf(sInfoText, 50, L"Project +: v%4.2f installed", pmUpdateVersion);
+				swprintf(sInfoText, 50, L"Project M: v%4.2f installed", pmUpdateVersion);
 				loadInfoFile();
 				pmCurrentVersion = pmUpdateVersion;
 				m_bInstallUpdate = false;
@@ -784,10 +784,10 @@ bool CUpdateScene::Work()
 								fileNameLength++;
 							}
 							const char * fileName = offset;
-							//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
+							//char directoryPath = "/projectm/launcher/updates/"; // fix this bane :)
 							char fullPath[fileNameLength + 27]; ///why use strlen? i can count!
-							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
-							CreateSubfolder("sd:/Project+/launcher/updates/");
+							sprintf(fullPath, "sd:/projectm/launcher/updates/%s", fileName);
+							CreateSubfolder("sd:/projectm/launcher/updates/");
 
 							FileHolder localUpdateFile(fullPath, "wb");
 							if (!localUpdateFile.IsOpen())
@@ -860,7 +860,7 @@ bool CUpdateScene::Work()
 
 		cur = doc.RootElement();
 
-		cur = cur->FirstChildElement("project+");
+		cur = cur->FirstChildElement("projectm");
 		tinyxml2::XMLElement* projectmElement = cur;
 		if (projectmElement)
 		{
@@ -931,7 +931,7 @@ bool CUpdateScene::Work()
 				else // update found
 				{
 					swprintf(sInfoText, 255, L"Online update found!");
-					swprintf(confirmUpdateLine3Text, 50, L"Project +: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
+					swprintf(confirmUpdateLine3Text, 50, L"Project M: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
 					m_bInstallUpdate = false;
 					showConfirmUpdatePopup = true;
 					while (showConfirmUpdatePopup && !m_bCancelUpdate)
@@ -960,10 +960,10 @@ bool CUpdateScene::Work()
 							fileNameLength++;
 						}
 						const char * fileName = offset;
-						//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
+						//char directoryPath = "/projectm/launcher/updates/"; // fix this bane :)
 						char tmpPath[255]; ///why use strlen? i can count! EDIT: NOPE!
-						sprintf(tmpPath, "sd:/Project+/launcher/updates/%s.tmp", fileName);
-						CreateSubfolder("sd:/Project+/launcher/updates/");
+						sprintf(tmpPath, "sd:/projectm/launcher/updates/%s.tmp", fileName);
+						CreateSubfolder("sd:/projectm/launcher/updates/");
 						char *tmpPathPointer = tmpPath;
 
 						remove(tmpPath);
@@ -1024,7 +1024,7 @@ bool CUpdateScene::Work()
 							fProgressPercentage = 0.0f;
 
 							char fullPath[255]; ///why use strlen? i can count! EDIT: NOPE! I CAN'T!
-							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
+							sprintf(fullPath, "sd:/projectm/launcher/updates/%s", fileName);
 							remove(fullPath);
 							fProgressPercentage = 0.5f;
 							rename(tmpPath, fullPath);
@@ -1054,7 +1054,7 @@ bool CUpdateScene::Work()
 							if (m_bCancelUpdate)
 								break;
 
-							swprintf(sInfoText, 50, L"Project +: v%4.2f installed", pmUpdateVersion);
+							swprintf(sInfoText, 50, L"Project M: v%4.2f installed", pmUpdateVersion);
 							loadInfoFile();
 							pmCurrentVersion = pmUpdateVersion;
 
@@ -1163,7 +1163,7 @@ void CUpdateScene::drawProgressBar()
 	height = initialSizeRatio * finalHeight + ((1.0f - initialSizeRatio) * finalHeight * animationRatio);
 
 	Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 0, 0, 0, u8(178 * animationRatio) }, true);
-	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 163, 255, 224, u8(255 * animationRatio) }, true);
+	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
 
 	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
 }
