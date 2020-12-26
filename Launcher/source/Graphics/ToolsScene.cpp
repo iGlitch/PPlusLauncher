@@ -64,15 +64,15 @@ void CToolsScene::Load()
 
 
 	char line2[50];
-	sprintf(line2, "Project M Version: %s", projectMVersion);
+	sprintf(line2, "Project+ Version: %s", projectMVersion);
 	aboutLine2Text = charToWideChar(line2);
 
 	
 
 	//aboutLine2Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
 	//aboutLine3Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
-	//sprintf(aboutLine2Text, "Project M Version: %s", projectMVersion);
-	//sprintf(aboutLine3Text, "Project M Codeset: %s", projectMCodeset);
+	//sprintf(aboutLine2Text, "Project+ Version: %s", projectMVersion);
+	//sprintf(aboutLine3Text, "Project+ Codeset: %s", projectMCodeset);
 
 	aboutPopup->setLineTextItems(2, L"Launcher Version: 1.0", aboutLine2Text);
 
@@ -215,10 +215,10 @@ void CToolsScene::Draw()
 	switch (m_iMenuSelectedIndex)
 	{
 	case 0:
-		drawInfoBox(yPos + offset, 36.0F, L"Install Project M. A copy of Super Smash Bros. Brawl is required.");
+		drawInfoBox(yPos + offset, 36.0F, L"Install Project+. A copy of Super Smash Bros. Brawl is required.");
 		break;
 	case 1:
-		drawInfoBox(yPos + offset, 36.0F, L"Check for updates and use other various Project M-related tools.");
+		drawInfoBox(yPos + offset, 36.0F, L"Check for updates and use other various Project+ related tools.");
 		break;
 	case 2:
 		drawInfoBox(yPos + offset, 36.0F, L"View version information, credits, and additional info.");

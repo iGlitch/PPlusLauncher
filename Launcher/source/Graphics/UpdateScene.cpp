@@ -70,7 +70,7 @@ void CUpdateScene::Load()
 	infoFileMissingPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
 	infoFileMissingPopup->setAnimationFrames(15, true);
 	infoFileMissingPopup->setSelectionTextItems(0, 2, L"Yes", L"No");
-	infoFileMissingPopup->setLineTextItems(3, L"The Project M info.xml file was not", L"found. Do you have an unmodified ", L"installation of Project M 3.0?");
+	infoFileMissingPopup->setLineTextItems(3, L"The Project+ info.xml file was not", L"found. Do you have an unmodified ", L"installation of Project+ 2.2?");
 
 	showCancelPopup = false;
 	cancelPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
@@ -556,7 +556,7 @@ bool CUpdateScene::Work()
 		if (pmUpdateVersion != 0.0f)
 		{
 			swprintf(sInfoText, 255, L"Local update found: %s", pmUpdateFileName);
-			swprintf(confirmUpdateLine3Text, 50, L"Project M: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
+			swprintf(confirmUpdateLine3Text, 50, L"Project+: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
 			m_bInstallUpdate = false;
 			showConfirmUpdatePopup = true;
 			while (showConfirmUpdatePopup && !m_bCancelUpdate)
@@ -583,7 +583,7 @@ bool CUpdateScene::Work()
 				if (m_bCancelUpdate)
 					return false;
 
-				swprintf(sInfoText, 50, L"Project M: v%4.2f installed", pmUpdateVersion);
+				swprintf(sInfoText, 50, L"Project+: v%4.2f installed", pmUpdateVersion);
 				loadInfoFile();
 				pmCurrentVersion = pmUpdateVersion;
 				m_bInstallUpdate = false;
@@ -931,7 +931,7 @@ bool CUpdateScene::Work()
 				else // update found
 				{
 					swprintf(sInfoText, 255, L"Online update found!");
-					swprintf(confirmUpdateLine3Text, 50, L"Project M: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
+					swprintf(confirmUpdateLine3Text, 50, L"Project+: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
 					m_bInstallUpdate = false;
 					showConfirmUpdatePopup = true;
 					while (showConfirmUpdatePopup && !m_bCancelUpdate)
@@ -1054,7 +1054,7 @@ bool CUpdateScene::Work()
 							if (m_bCancelUpdate)
 								break;
 
-							swprintf(sInfoText, 50, L"Project M: v%4.2f installed", pmUpdateVersion);
+							swprintf(sInfoText, 50, L"Project+: v%4.2f installed", pmUpdateVersion);
 							loadInfoFile();
 							pmCurrentVersion = pmUpdateVersion;
 

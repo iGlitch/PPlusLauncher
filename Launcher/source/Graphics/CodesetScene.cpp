@@ -354,7 +354,7 @@ void CPatchScene::drawCancelPopup()
 	Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width, 1.0f, (GXColor){ 125, 125, 125, u8(255 * popupAanimationRatio) }, true);
 	Menu_DrawRectangle(m_fScreenWidth / 2.0f, yPos + (height * textAreaRatio), 1.0f, height - (height * textAreaRatio), (GXColor){ 125, 125, 125, u8(255 * popupAanimationRatio) }, true);
 
-	//fontSystem[16]->drawText(screenWidth / 2.0f, yPos + 35.0f, L"Install Project M to your SD card?", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
+	//fontSystem[16]->drawText(screenWidth / 2.0f, yPos + 35.0f, L"Install Project+ to your SD card?", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
 	fontSystem[16]->drawText(m_fScreenWidth / 2.0f, yPos + 60.0f, L"Are you sure you want to cancel the installation?", (GXColor){ 255, 255, 255, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER);
 	//fontSystem[16]->drawText(screenWidth / 2.0f, yPos + 85.0f, L"Installation can take up to 15 minutes.", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
 
