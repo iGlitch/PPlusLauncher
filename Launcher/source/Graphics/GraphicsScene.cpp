@@ -70,7 +70,7 @@ void GraphicsScene::drawMenuItem(f32 x, f32 y, f32 itemWidth, f32 textureWidth, 
 	drawMenuItemInternal((itemWidth + 31) *(slideInAnimationRatio - 1.0f), y, itemWidth, u8(0), u8(0), u8(0));
 	if (selected)
 	{
-		drawMenuItemInternal((itemWidth + 31) * (slideInAnimationRatio - 1.0f), y - (5 * selectionAnimationRatio), itemWidth - (10 * selectionAnimationRatio), 165, 184, 255);
+		drawMenuItemInternal((itemWidth + 31) * (slideInAnimationRatio - 1.0f), y - (5 * selectionAnimationRatio), itemWidth - (10 * selectionAnimationRatio), 163, 255, 215);
 		drawTexturedBox(texture, itemWidth - (10 * selectionAnimationRatio) - textureWidth + offset, y + 10 - (5 * selectionAnimationRatio), textureWidth, textureHeight, u8(0), u8(0), u8(0), 255);
 	}
 	else

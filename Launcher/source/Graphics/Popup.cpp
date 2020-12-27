@@ -173,7 +173,7 @@ void Popup::draw()
 		GXColor itemBackgroundColor = (GXColor){ 255, 255, 255, u8(255 * animationRatio) };
 		if (i == m_iSelectedIndex)
 		{
-			Menu_DrawRectangle(xPos + ((f32)i * width / (f32)m_iSelectionCount), yPos + (height * m_fTextAreaRatio), width / (f32)m_iSelectionCount, height - (height * m_fTextAreaRatio), (GXColor){ 165, 184, 255, u8(255 * animationRatio) }, true);
+			Menu_DrawRectangle(xPos + ((f32)i * width / (f32)m_iSelectionCount), yPos + (height * m_fTextAreaRatio), width / (f32)m_iSelectionCount, height - (height * m_fTextAreaRatio), (GXColor){ 163, 255, 215, u8(255 * animationRatio) }, true);
 			itemBackgroundColor = (GXColor){ 0, 0, 0, u8(255 * animationRatio) };
 		}
 
