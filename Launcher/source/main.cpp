@@ -520,19 +520,26 @@ int main(int argc, char **argv)
 
 	if (eNextScene == SCENE_LAUNCHTITLE)
 	{
-		/*printf("Flushing DCRange\n");
-		DCFlushRange((void*)0x80588280, 4);
-		printf("Invalidating DCRange\n");
-		ICInvalidateRange((void*)0x80588280, 4);
-		printf("Copying wu_fd \n");
-		memcpy((void*)0x80588280, wu_fd, 4);
-		printf("Setting poll\n");
-		USBAdapter_SetPollInBackground(1);
-		usleep(100);
-		printf("Starting async\n");*/
 		USBAdapter_ReadBackground();
-		//printf("Launching Title\n");
-		LaunchTitle();
+		if (__io_usbstorage.startup() && __io_usbstorage.isInserted()){
+		ClearArguments();
+		AddBootArgument("sd:/apps/projplus/usb.dol");
+		FreeHomebrewBuffer();
+
+		FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
+		if (!fBootElf.IsOpen())
+			return 0;
+		int len = fBootElf.Size();
+		u8 * dBootElf = (u8*)malloc(len);
+		memset(dBootElf, 0, len);
+		fBootElf.FRead(dBootElf, len, 1);
+		fBootElf.FClose();
+
+		CopyHomebrewMemory(dBootElf, 0, len);
+		free(dBootElf);
+		BootHomebrew();
+		}
+		else LaunchTitle();
 	}
 	else if (eNextScene == SCENE_LAUNCHELF)
 	{
