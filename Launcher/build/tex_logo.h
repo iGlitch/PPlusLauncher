@@ -1,0 +1,1 @@
+#define logo 0

@@ -1,0 +1,10 @@
+#define en_menu_about 0
+#define en_menu_back 1
+#define en_menu_exit 2
+#define en_menu_install 3
+#define en_menu_installchannel 4
+#define en_menu_play 5
+#define en_menu_repairfiles 6
+#define en_menu_tools 7
+#define en_menu_update 8
+#define en_menu_addons 9
