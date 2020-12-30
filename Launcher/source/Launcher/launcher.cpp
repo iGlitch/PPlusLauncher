@@ -379,7 +379,7 @@ void sd_copy_codes(char *filename) {
 
 	DIR *pdir = opendir("/data/gecko/codes/");
 	if (pdir == NULL){
-		pdir = opendir("/codes/");
+		pdir = opendir("/Project+/");
 		if (pdir == NULL){
 			codes_state = 1;	// dir not found
 			return;
