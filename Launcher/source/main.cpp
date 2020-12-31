@@ -9,6 +9,7 @@
 //#include "MediaDevices/DeviceHandler.hpp"
 
 #include <sys/iosupport.h>
+#include <sys/dir.h>
 
 #include "tools.h"
 
@@ -516,51 +517,75 @@ int main(int argc, char **argv)
 	if (useNetwork)
 		Network_Stop();
 
-
-
 	if (eNextScene == SCENE_LAUNCHTITLE)
 	{
 		USBAdapter_ReadBackground();
+
 		if (__io_usbstorage.startup() && __io_usbstorage.isInserted()){
-		ClearArguments();
-		AddBootArgument("sd:/apps/projplus/usb.dol");
-		FreeHomebrewBuffer();
+			FILE *f = NULL;
+			FILE *f2 = NULL;
+			FILE *f3 = NULL;
+			FILE *f4 = NULL;
+			FILE *f5 = NULL;
+			FILE *f6 = NULL;
+			FILE *f7 = NULL;
+			FILE *f8 = NULL;
+			FILE *f9 = NULL;
+			FILE *f10 = NULL;
+			FILE *f11 = NULL;
+			FILE *f12 = NULL;
+			FILE *f13 = NULL;
+			FILE *f14 = NULL;
+			FILE *f15 = NULL;
+			FILE *f16 = NULL;					
+			DIR* foldr = opendir("usb:/wbfs/Super Smash Bros. Brawl [RSBE01]/");
+			f = fopen("usb:/wbfs/RSBE01.wbfs", "rb");
+			f2 = fopen("usb:/wbfs/RSBE01.iso", "rb");
+			DIR* foldr2 = opendir("usb:/wbfs/RSBE01_Super Smash Bros. Brawl/");
+			f3 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBE01].wbfs", "rb");
+			f4 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBE01].iso", "rb");
+			
+			DIR* foldr3 = opendir("usb:/wbfs/Super Smash Bros. Brawl [RSBP01]/");
+			f5 = fopen("usb:/wbfs/RSBP01.wbfs", "rb");
+			f6 = fopen("usb:/wbfs/RSBP01.iso", "rb");
+			DIR* foldr4 = opendir("usb:/wbfs/RSBP01_Super Smash Bros. Brawl/");
+			f7 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBP01].wbfs", "rb");
+			f8 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBP01].iso", "rb");
+			
+			DIR* foldr5 = opendir("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01]/");
+			f9 = fopen("usb:/wbfs/RSBJ01.wbfs", "rb");
+			f10 = fopen("usb:/wbfs/RSBJ01.iso", "rb");
+			DIR* foldr6 = opendir("usb:/wbfs/RSBJ01_Dairantou Smash Brothers X/");
+			f11 = fopen("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01].wbfs", "rb");
+			f12 = fopen("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01].iso", "rb");
 
-		FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
-		if (!fBootElf.IsOpen())
-			return 0;
-		int len = fBootElf.Size();
-		u8 * dBootElf = (u8*)malloc(len);
-		memset(dBootElf, 0, len);
-		fBootElf.FRead(dBootElf, len, 1);
-		fBootElf.FClose();
+			DIR* foldr7 = opendir("usb:/wbfs/Daenantu Smash Brothers X [RSBK01]/");
+			f13 = fopen("usb:/wbfs/RSBK01.wbfs", "rb");
+			f14 = fopen("usb:/wbfs/RSBK01.iso", "rb");
+			DIR* foldr8 = opendir("usb:/wbfs/RSBK01_Daenantu Smash Brothers X/");
+			f15 = fopen("usb:/wbfs/Daenantu Smash Brothers X [RSBK01].wbfs", "rb");
+			f16 = fopen("usb:/wbfs/Daenantu Smash Brothers X [RSBK01].iso", "rb");
+			if((foldr != NULL)||(f != NULL)||(f2 != NULL)||(foldr2 != NULL)||(f3 != NULL)||(f4 != NULL)|(foldr3 != NULL)||(f5 != NULL)||(f6 != NULL)||(foldr4 != NULL)||(f7 != NULL)||(f8 != NULL)||(foldr5 != NULL)||(f9 != NULL)||(f10 != NULL)||(foldr6 != NULL)||(f11 != NULL)||(f12 != NULL)||(foldr7 != NULL)||(f13 != NULL)||(f14 != NULL)||(foldr8 != NULL)||(f15 != NULL)||(f16 != NULL)){
+				ClearArguments();
+				AddBootArgument("sd:/apps/projplus/usb.dol");
+				FreeHomebrewBuffer();
 
-		CopyHomebrewMemory(dBootElf, 0, len);
-		free(dBootElf);
-		BootHomebrew();
+				FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
+				if (!fBootElf.IsOpen())
+					return 0;
+				int len = fBootElf.Size();
+				u8 * dBootElf = (u8*)malloc(len);
+				memset(dBootElf, 0, len);
+				fBootElf.FRead(dBootElf, len, 1);
+				fBootElf.FClose();
+				
+				CopyHomebrewMemory(dBootElf, 0, len);
+				free(dBootElf);
+				BootHomebrew();
+			}
+			else LaunchTitle();
 		}
 		else LaunchTitle();
-	}
-	else if (eNextScene == SCENE_LAUNCHELF)
-	{
-		if (useUSBAdapter)
-			USBAdapter_Stop();
-		ClearArguments();
-		AddBootArgument("sd:/apps/projplus/usb.dol");
-		FreeHomebrewBuffer();
-
-		FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
-		if (!fBootElf.IsOpen())
-			return 0;
-		int len = fBootElf.Size();
-		u8 * dBootElf = (u8*)malloc(len);
-		memset(dBootElf, 0, len);
-		fBootElf.FRead(dBootElf, len, 1);
-		fBootElf.FClose();
-
-		CopyHomebrewMemory(dBootElf, 0, len);
-		free(dBootElf);
-		BootHomebrew();
 	}
 	else if (!IsDolphin()) //won't crash dolphin
 	{
