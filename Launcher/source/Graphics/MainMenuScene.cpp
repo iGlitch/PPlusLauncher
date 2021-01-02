@@ -260,7 +260,7 @@ void CMainMenuScene::Draw()
 	yPos += 70.0f;
 
 	//MenuItem2
-	drawMenuItem(0.0f, yPos, 250, 100, 33, 37, 15, &menuAddonsTexture, (m_iMenuSelectedIndex == 2));
+	drawMenuItem(0.0f, yPos, 250, 113, 33, 37, 15, &menuAddonsTexture, (m_iMenuSelectedIndex == 2));
 	yPos += 70.0f;
 
 	//MenuItem3
