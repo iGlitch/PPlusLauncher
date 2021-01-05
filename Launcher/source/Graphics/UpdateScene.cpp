@@ -612,7 +612,7 @@ bool CUpdateScene::Work()
 			delete xmlBuffer;
 			xmlBuffer = NULL;
 		}
-		xmlBufferSize = downloadFileToBuffer("https://kirbeast.gitlab.io/ProjectWave/launcher/update.xml", &xmlBuffer, sInfoText, m_bCancelUpdate, fProgressPercentage);
+		xmlBufferSize = downloadFileToBuffer("http://legacy.glitchery.jp/projplus/updater/update.xml", &xmlBuffer, sInfoText, m_bCancelUpdate, fProgressPercentage);
 		if (xmlBufferSize <= 0)
 		{
 			swprintf(sInfoText, 255, L"Download failed. Retrying...");

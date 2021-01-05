@@ -116,7 +116,7 @@ void * networkThreadFunction()
 		f32 progress;
 		swprintf(newsText, 4096, L"Downloading news...");
 
-		bufferSize = downloadFileToBuffer("https://kirbeast.gitlab.io/ProjectWave/launcher/update.xml", &buffer, NULL, networkThreadCancelRequested, progress);
+		bufferSize = downloadFileToBuffer("http://legacy.glitchery.jp/projplus/updater/update.xml", &buffer, NULL, networkThreadCancelRequested, progress);
 
 		if (bufferSize > 0)
 		{
