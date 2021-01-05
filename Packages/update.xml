@@ -1,37 +1,22 @@
 <root>
 	<projectm>
-		<update 
-			updateVersion="3.01" 
-			length="40238624" 
-			md5="57ee1f70ed8d64932e1329a31524390e">
+		<update updateVersion="3.01" length="40238624" md5="57ee1f70ed8d64932e1329a31524390e">
 			<baseVersionsSupported>
 				<baseVersion>3.0</baseVersion>
 			</baseVersionsSupported>
-			<url>
-				http://projectmgame.com/downloads/launcher/pmupdate-3.00-3.01.7z
-			</url>
+			<url>http://projectmgame.com/downloads/launcher/pmupdate-3.00-3.01.7z</url>
 		</update>
-		<update 
-			updateVersion="3.02" 
-			length="8328933" 
-			md5="4b82b70c4e62b5bf87813236548ddc9c">
+		<update updateVersion="3.02" length="8328933" md5="4b82b70c4e62b5bf87813236548ddc9c">
 			<baseVersionsSupported>
 				<baseVersion>3.01</baseVersion>
 			</baseVersionsSupported>
-			<url>
-				http://projectmgame.com/downloads/launcher/pmupdate-3.01-3.02.7z
-			</url>
+			<url>http://projectmgame.com/downloads/launcher/pmupdate-3.01-3.02.7z</url>
 		</update>
-		<update 
-			updateVersion="3.05" 
-			length="176356365" 
-			md5="a76869c8a911ed63951a800ea9821907">
+		<update updateVersion="3.05" length="176356365" md5="a76869c8a911ed63951a800ea9821907">
 			<baseVersionsSupported>
 				<baseVersion>3.02</baseVersion>
 			</baseVersionsSupported>
-			<url>
-				http://projectmgame.com/downloads/launcher/pmupdate-3.02-3.5.7z
-			</url>
+			<url>http://projectmgame.com/downloads/launcher/pmupdate-3.02-3.5.7z</url>
 		</update>
 	</projectm>
 	<launcher>
@@ -39,12 +24,8 @@
 		<baseVersionsSupported>
 			<baseVersion>*</baseVersion>
 		</baseVersionsSupported>
-		<url>
-			http://projectmgame.com/downloads/launcher/launcher-1.12.7z
-		</url>
+		<url>http://projectmgame.com/downloads/launcher/launcher-1.12.7z</url>
 		</update>
 	</launcher>
-	<news>
-		Welcome to the new Project M Launcher! Project M 3.5 has been released! Update today!
-	</news>
+	<news>Welcome to the new Project M Launcher! Project M 3.5 has been released! Update today!</news>
 </root>

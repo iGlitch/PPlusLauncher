@@ -97,7 +97,7 @@ namespace UIThread
 		{
 			for (int j = 0; j < 4; j++)
 			{
-				drawTexturedBox(&texBackgroundTile, 176 * i, 176 * j, 190, 176, 255, 255, 255, 255);
+				drawTexturedBox(&texBackgroundTile, 176 * i, 176 * j, 176, 176, 255, 255, 255, 255);
 			}
 		}
 
