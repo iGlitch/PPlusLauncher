@@ -224,6 +224,7 @@ void CAddonsScene::drawSelectionMenu(float yPos)
 	if (enumeratedFiles && m_iMenuSelectedIndex >= 0)
 	{
 		int initialPosition = m_iMenuSelectedIndex / separatorCount; //floor
+		initialPosition *= 5;
 		int modPosition = m_iMenuSelectedIndex % separatorCount;
 		int endPosition = initialPosition + 5;
 		if (endPosition > addonFiles.size())

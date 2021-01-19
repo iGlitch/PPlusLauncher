@@ -19,7 +19,7 @@
 #include "video_tinyload.h"
 
 #define GAMECONFIG		"sd:/Project+/gc.txt"
-
+#define	 Disc_ID		((vu32*)0x80000000)
 
 u8 config_bytes[16] ATTRIBUTE_ALIGN(32);
 int codes_state = 0;
@@ -377,14 +377,11 @@ void sd_copy_codes(char *filename) {
 	u32 filesize;
 	char filepath[256];
 
-	DIR *pdir = opendir("/data/gecko/codes/");
-	if (pdir == NULL){
-		pdir = opendir("/Project+/");
+	DIR *pdir = opendir("/Project+/");
 		if (pdir == NULL){
 			codes_state = 1;	// dir not found
 			return;
 		}
-	}
 
 	closedir(pdir);
 	fflush(stdout);
@@ -483,31 +480,31 @@ void LaunchTitle()
 
 	printf("\x1b[2;0H");*/
 	
-	printf("DVD_SetLowMemPre\n");
+	//printf("DVD_SetLowMemPre\n");
 	Disc_SetLowMemPre();
-	printf("WDVD_Init\n");
+	//printf("WDVD_Init\n");
 	WDVD_Init();
 	if (Disc_Open() != 0) {
-		printf("Cannot open disc");
+		//printf("Cannot open disc");
 		sleep(2);
 		return 0;
 	}
-
-	printf("Clear GameIdBuffer\n");
+	if((*(u32*)Disc_ID & 0xFFFFFF00) == 0x52534200){
+	//printf("Clear GameIdBuffer\n");
 	memset(gameidbuffer, 0, 8);
-	printf("Point GameIdBuffer\n");
+	//printf("Point GameIdBuffer\n");
 	memcpy(gameidbuffer, (char*)0x80000000, 6);
 
 	printf("ID: %s\n", gameidbuffer);
 
-	printf("Codelist\n");
+	//printf("Codelist\n");
 	codelist = (u8 *)0x800028B8;
 
-	printf("SDCopyGameConfig\n");
+	//printf("SDCopyGameConfig\n");
 	sd_copy_gameconfig(gameidbuffer);
-	printf("SDCopyCodes\n");
+	//printf("SDCopyCodes\n");
 	sd_copy_codes(gameidbuffer);
-	printf("Shutdown SD\n");
+	//printf("Shutdown SD\n");
 	__io_wiisd.shutdown();
 
 
@@ -526,7 +523,7 @@ void LaunchTitle()
 	u8 codesselect = config_bytes[4];
 	printf("launch_rundisc: codesselect value = %d\n", codesselect);
 
-	printf("ocarina_set_codes\n");
+	//printf("ocarina_set_codes\n");
 	//ocarina_set_codes
 	code_buf = tempcodelist;
 	code_size = codelistsize;
@@ -584,19 +581,18 @@ void LaunchTitle()
 	printf("launch_rundisc: aspectRatio value = %d\n", aspectRatio);
 
 	u32 offset = 0;
-	printf("Disc FindPartion\n");
+	//printf("Disc FindPartion\n");
 	Disc_FindPartition(&offset);
-	printf("WDVD OpenPartion\n");
+	//printf("WDVD OpenPartion\n");
 	WDVD_OpenPartition(offset, &GameIOS);
-	printf("vmode\n");
+	//printf("vmode\n");
 	vmode = Disc_SelectVMode(0, &vmode_reg);
-	printf("Apploader\n\n");
-	AppEntrypoint = Apploader_Run(vidMode, vmode, vipatchselect, countryString,
-		patchVidModes, aspectRatio);
+	//printf("Apploader\n\n");
+	AppEntrypoint = Apploader_Run(vidMode, vmode, vipatchselect, countryString, patchVidModes, aspectRatio);
 
 
 	//load_handler();
-	printf("load_handler\n\n");
+	//printf("load_handler\n\n");
 	memcpy((void*)0x80001800, codehandleronly, codehandleronly_size);
 	if (code_size > 0 && code_buf)
 	{
@@ -607,7 +603,7 @@ void LaunchTitle()
 	DCFlushRange((void*)0x80001800, codehandleronly_size);
 	ICInvalidateRange((void*)0x80001800, codehandleronly_size);
 
-	printf("load multidol\n");
+	//printf("load multidol\n");
 
 	// Load multidol handler
 	memcpy((void*)0x80001000, multidol, multidol_size);
@@ -642,11 +638,10 @@ void LaunchTitle()
 	case 0x07:
 		memcpy((void*)0x8000119C, axnextframehooks, 12);
 		memcpy((void*)0x80001198, axnextframehooks + 3, 4);
-		break;
 	}
 	DCFlushRange((void*)0x80001198, 16);
 
-	printf("ocarina do code\n");
+	//printf("ocarina do code\n");
 
 	//ocarina_do_code
 	if (codelist)
@@ -658,7 +653,7 @@ void LaunchTitle()
 		DCFlushRange(codelist, (u32)codelistend - (u32)codelist);
 	}
 
-	printf("apply poke\n");
+	//printf("apply poke\n");
 	//apply_pokevalues();
 
 	u32 *codeaddr, *codeaddr2, *addrfound = NULL;
@@ -716,33 +711,33 @@ void LaunchTitle()
 
 	//sleep(1);
 	//sleep(1);
-	printf("dvd closeing\n");
+	//printf("dvd closeing\n");
 	WDVD_Close();
 	//sleep(1);
-	printf("dvd set low mem\n");
+	//printf("dvd set low mem\n");
 	Disc_SetLowMem(GameIOS);
 
-	printf("dvd set time\n");
+	//printf("dvd set time\n");
 	Disc_SetTime();
 
-	printf("dvd set vmode\n");
+	//printf("dvd set vmode\n");
 	Disc_SetVMode(vmode, vmode_reg);
 
-	printf("IRQ Disable\n");
+	//printf("IRQ Disable\n");
 	u32 level = IRQ_Disable();
 
-	printf("IOS Shutdown\n");
+	//printf("IOS Shutdown\n");
 	__IOS_ShutdownSubsystems();
 
 	//__exception_closeall();
-	printf("0xCC003024 = 1\n");
+	//printf("0xCC003024 = 1\n");
 	*(vu32*)0xCC003024 = 1;
 
 	SYS_SetResetCallback(__Sys_ResetCallback);
 
 	if (AppEntrypoint == 0x3400)
 	{
-		printf("EntryPoint = 0x3400\n");
+		//printf("EntryPoint = 0x3400\n");
 
 		if (hooktype)
 		{
@@ -771,7 +766,7 @@ void LaunchTitle()
 	}
 	else
 	{
-		printf("EntryPoint != 0x3400\n");
+		//printf("EntryPoint != 0x3400\n");
 
 		asm volatile (
 			"lis %r3, AppEntrypoint@h\n"
@@ -785,9 +780,10 @@ void LaunchTitle()
 			"bctr\n"
 			);
 	}
-	printf("IRQ Restore\n");
+	//printf("IRQ Restore\n");
 
 	IRQ_Restore(level);
-
+	}
+	else return 0;
 }
 

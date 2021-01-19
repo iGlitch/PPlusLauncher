@@ -53,7 +53,12 @@ const int THREAD_SLEEP_MS(100);
 static bool g_bHaltGUI = false;
 static bool g_bGUIThreadIsSleeping = false;
 static bool g_bExitRequested = false;
-
+#define HBC_LULZ			0x000100014c554c5aULL
+#define HBC_108				0x00010001af1bf516ULL
+#define HBC_JODI			0x0001000148415858ULL
+#define HBC_HAXX			0x000100014a4f4449ULL
+#define RETURN_CHANNEL		0x0001000857494948ULL
+#define SYSTEM_MENU			0x0000000100000002ULL
 u8 * configFileData;
 int configFileSize;
 u8 * infoFileData;
@@ -67,7 +72,7 @@ extern s32 wu_fd;
 void BackToLoader(void);
 bool IsFromHBC();
 
-f32 g_LauncherVersion = 1.13f;
+f32 g_LauncherVersion = 1.14f;
 
 namespace UIThread
 {
@@ -215,8 +220,6 @@ void loadConfigFile()
 	}
 }
 
-
-
 void loadConfig()
 {
 	//Load defaults
@@ -280,8 +283,29 @@ void loadConfig()
 	}
 }
 
-
-
+void launchUsbDol()
+    {
+    ClearArguments();
+    FreeHomebrewBuffer();
+                
+    struct stat st;
+    if (stat("sd:/Project+/RSBP01.gct", &st) == 0){AddBootArgument("RSBP01");}
+    else if (stat("sd:/Project+/RSBJ01.gct", &st) == 0){AddBootArgument("RSBJ01");}
+    else if (stat("sd:/Project+/RSBK01.gct", &st) == 0){AddBootArgument("RSBK01");}
+    else {AddBootArgument("RSBE01");}
+  
+    FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
+    int len = fBootElf.Size();
+    u8 *dBootElf = (u8*)malloc(len);
+   
+    memset(dBootElf, 0, len);
+    fBootElf.FRead(dBootElf, len, 1);
+    fBootElf.FClose();
+                
+    CopyHomebrewMemory(dBootElf, 0, len);
+    free(dBootElf);
+    BootHomebrew();
+}
 
 int main(int argc, char **argv)
 {
@@ -294,12 +318,10 @@ int main(int argc, char **argv)
 		if (!sdhcSupport)
 			sdhcSupport = iosVersion == 60 || iosVersion == 70 || (IOS_ReloadIOS(70) >= 0) || (IOS_ReloadIOS(60) >= 0);
 	}
-
-	VIDEO_Init();
-
+VIDEO_Init();
+	//  	VIDEO_Init();
 	f32 fScreenWidth;
 	f32 fScreenHeight;
-
 	//devHandler.MountSD();
 	//devHandler.MountSD();
 	//devHandler.MountSD();
@@ -311,36 +333,48 @@ int main(int argc, char **argv)
 	loadConfig();
 
 	WPAD_Init();
-    WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
-    WPAD_SetIdleTimeout(60 * 5); // idle after 5 minutes
+	WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
+	WPAD_SetIdleTimeout(60 * 5); // idle after 5 minutes
 	WPAD_SetVRes(WPAD_CHAN_0, fScreenWidth, fScreenHeight);
     PAD_Init();
-
-	if (useVideo)
-	{
-		InitVideo();
-		fScreenWidth = getScreenWidth();
-		fScreenHeight = getScreenHeight();
-		sleep(3);
-	}
 	
-	if (minima)
-	{
+	if (minima){
+		
+		if (!IsDolphin()){sleep(3);}
 		while(1){
 			PAD_ScanPads();
 			WPAD_ScanPads();
 			u32 pad_down = PAD_ButtonsDown(0) | PAD_ButtonsDown(1) | PAD_ButtonsDown(2) | PAD_ButtonsDown(3);
 			u32 wpad_down = WPAD_ButtonsDown(0) | WPAD_ButtonsDown(1) | WPAD_ButtonsDown(2) | WPAD_ButtonsDown(3);
-		if ((wpad_down & WPAD_BUTTON_A) || (pad_down & PAD_BUTTON_A)){break;} 
-		else {
-		//DeinitFreeType();
-		StopGX();
-		//WPAD_Shutdown();
-		//Network_Stop();
-		LaunchTitle();
-		//break;
-			}
+		if ((wpad_down & WPAD_BUTTON_A) || (pad_down & PAD_BUTTON_A)){goto Menu;}
+		break;}		//hold A while launching with autoboot on, go to menu 
+	/*	if ((wpad_down & WPAD_BUTTON_B) || (pad_down & PAD_BUTTON_B)){    ClearArguments();
+    FreeHomebrewBuffer();
+               
+    FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
+    int len = fBootElf.Size();
+    u8 *dBootElf = (u8*)malloc(len);
+   
+    memset(dBootElf, 0, len);
+    fBootElf.FRead(dBootElf, len, 1);
+    fBootElf.FClose();
+                
+    CopyHomebrewMemory(dBootElf, 0, len);
+    free(dBootElf);
+    BootHomebrew();}*/
+			if (!IsDolphin())WPAD_Shutdown();
+			LaunchTitle();
+			if (__io_usbstorage.startup() && __io_usbstorage.isInserted()){launchUsbDol();}
+			else{BackToLoader();}
 		}
+		else{
+Menu:
+	
+	if (useVideo)
+	{
+		InitVideo();
+		fScreenWidth = getScreenWidth();
+		fScreenHeight = getScreenHeight();
 	}
 
 	if (useNetwork)
@@ -371,10 +405,7 @@ int main(int argc, char **argv)
 		setLoadFlags(FT_LOAD_NO_HINTING);
 		setRenderMode(FT_RENDER_MODE_NORMAL);
 		InitFreeType(vera_bold_ttf, vera_bold_ttf_size);
-
 	}
-
-
 
 	if (useVideo && useDefaultTextures)
 	{
@@ -387,7 +418,7 @@ int main(int argc, char **argv)
 	BrstmPlayer* pMusicPlayer;
 	if (useMusic)
 	{
-		FileHolder brstmFile("sd:/Project+/launcher/menu_music.brstm", "rb");
+		FileHolder brstmFile("sd:/menu_music.brstm", "rb");
 		if (brstmFile.IsOpen())
 		{
 			int len = brstmFile.Size();
@@ -491,14 +522,11 @@ int main(int argc, char **argv)
 		delete pMusicPlayer;
 	}
 
-	if (useSFX || useMusic)
-	{
-		ASND_End();
-	}
+	if (useSFX || useMusic){ASND_End();}
 
 	if (useWiiPads)
 	{
-		u32 cnt;
+		//u32 cnt;
 
 		/* Disconnect Wiimotes */
 		//for (cnt = 0; cnt < 4; cnt++) WPAD_Disconnect(cnt);
@@ -514,78 +542,13 @@ int main(int argc, char **argv)
 		StopGX();
 	}
 
-	if (useNetwork)
-		Network_Stop();
+	if (useNetwork){Network_Stop();}
 
 	if (eNextScene == SCENE_LAUNCHTITLE)
 	{
 		USBAdapter_ReadBackground();
-
-		if (__io_usbstorage.startup() && __io_usbstorage.isInserted()){
-			FILE *f = NULL;
-			FILE *f2 = NULL;
-			FILE *f3 = NULL;
-			FILE *f4 = NULL;
-			FILE *f5 = NULL;
-			FILE *f6 = NULL;
-			FILE *f7 = NULL;
-			FILE *f8 = NULL;
-			FILE *f9 = NULL;
-			FILE *f10 = NULL;
-			FILE *f11 = NULL;
-			FILE *f12 = NULL;
-			FILE *f13 = NULL;
-			FILE *f14 = NULL;
-			FILE *f15 = NULL;
-			FILE *f16 = NULL;					
-			DIR* foldr = opendir("usb:/wbfs/Super Smash Bros. Brawl [RSBE01]/");
-			f = fopen("usb:/wbfs/RSBE01.wbfs", "rb");
-			f2 = fopen("usb:/wbfs/RSBE01.iso", "rb");
-			DIR* foldr2 = opendir("usb:/wbfs/RSBE01_Super Smash Bros. Brawl/");
-			f3 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBE01].wbfs", "rb");
-			f4 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBE01].iso", "rb");
-			
-			DIR* foldr3 = opendir("usb:/wbfs/Super Smash Bros. Brawl [RSBP01]/");
-			f5 = fopen("usb:/wbfs/RSBP01.wbfs", "rb");
-			f6 = fopen("usb:/wbfs/RSBP01.iso", "rb");
-			DIR* foldr4 = opendir("usb:/wbfs/RSBP01_Super Smash Bros. Brawl/");
-			f7 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBP01].wbfs", "rb");
-			f8 = fopen("usb:/wbfs/Super Smash Bros. Brawl [RSBP01].iso", "rb");
-			
-			DIR* foldr5 = opendir("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01]/");
-			f9 = fopen("usb:/wbfs/RSBJ01.wbfs", "rb");
-			f10 = fopen("usb:/wbfs/RSBJ01.iso", "rb");
-			DIR* foldr6 = opendir("usb:/wbfs/RSBJ01_Dairantou Smash Brothers X/");
-			f11 = fopen("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01].wbfs", "rb");
-			f12 = fopen("usb:/wbfs/Dairantou Smash Brothers X [RSBJ01].iso", "rb");
-
-			DIR* foldr7 = opendir("usb:/wbfs/Daenantu Smash Brothers X [RSBK01]/");
-			f13 = fopen("usb:/wbfs/RSBK01.wbfs", "rb");
-			f14 = fopen("usb:/wbfs/RSBK01.iso", "rb");
-			DIR* foldr8 = opendir("usb:/wbfs/RSBK01_Daenantu Smash Brothers X/");
-			f15 = fopen("usb:/wbfs/Daenantu Smash Brothers X [RSBK01].wbfs", "rb");
-			f16 = fopen("usb:/wbfs/Daenantu Smash Brothers X [RSBK01].iso", "rb");
-			if((foldr != NULL)||(f != NULL)||(f2 != NULL)||(foldr2 != NULL)||(f3 != NULL)||(f4 != NULL)|(foldr3 != NULL)||(f5 != NULL)||(f6 != NULL)||(foldr4 != NULL)||(f7 != NULL)||(f8 != NULL)||(foldr5 != NULL)||(f9 != NULL)||(f10 != NULL)||(foldr6 != NULL)||(f11 != NULL)||(f12 != NULL)||(foldr7 != NULL)||(f13 != NULL)||(f14 != NULL)||(foldr8 != NULL)||(f15 != NULL)||(f16 != NULL)){
-				ClearArguments();
-				AddBootArgument("sd:/apps/projplus/usb.dol");
-				FreeHomebrewBuffer();
-
-				FileHolder fBootElf("sd:/apps/projplus/usb.dol", "rb");
-				if (!fBootElf.IsOpen())
-					return 0;
-				int len = fBootElf.Size();
-				u8 * dBootElf = (u8*)malloc(len);
-				memset(dBootElf, 0, len);
-				fBootElf.FRead(dBootElf, len, 1);
-				fBootElf.FClose();
-				
-				CopyHomebrewMemory(dBootElf, 0, len);
-				free(dBootElf);
-				BootHomebrew();
-			}
-			else LaunchTitle();
-		}
-		else LaunchTitle();
+		LaunchTitle();
+		if (__io_usbstorage.startup() && __io_usbstorage.isInserted()){launchUsbDol();}
 	}
 	else if (!IsDolphin()) //won't crash dolphin
 	{
@@ -594,17 +557,23 @@ int main(int argc, char **argv)
 		BackToLoader();
 	}
 	exit(0);
-
+	
+}
 }
 
 void BackToLoader(void)
 {
 	if (IsFromHBC())
 	{
+			WII_Initialize();
+	/* goto HBC */
+	WII_LaunchTitle(HBC_LULZ);
+	WII_LaunchTitle(HBC_108);
+	WII_LaunchTitle(HBC_JODI);
+	WII_LaunchTitle(HBC_HAXX);
 		exit(0);
 	}
 	else
 		SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
 }
-
 
