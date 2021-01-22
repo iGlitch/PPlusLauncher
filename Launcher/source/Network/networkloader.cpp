@@ -40,14 +40,9 @@ bool Network_Init()
 	return true;
 }
 
-
-
-
-
-
 void Network_Start()
 {
-	LWP_CreateThread(&networkThread, networkThreadFunction, NULL, NULL, 0, 16);
+	LWP_CreateThread(&networkThread, (void *)networkThreadFunction, NULL, NULL, 0, 16);
 	LWP_ResumeThread(networkThread);
 }
 
@@ -115,8 +110,8 @@ void * networkThreadFunction()
 		char * buffer;
 		f32 progress;
 		swprintf(newsText, 4096, L"Downloading news...");
-
-		bufferSize = downloadFileToBuffer("http://legacy.glitchery.jp/projplus/updater/update.xml", &buffer, NULL, networkThreadCancelRequested, progress);
+		char link[] = "http://legacy.glitchery.jp/projplus/updater/update.xml"; 
+		bufferSize = downloadFileToBuffer(link, &buffer, NULL, networkThreadCancelRequested, progress);
 
 		if (bufferSize > 0)
 		{

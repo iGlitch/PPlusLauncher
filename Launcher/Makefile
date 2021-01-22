@@ -17,7 +17,7 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	source source\Patching\7z source\Patching source\Profiler source\Graphics source\Audio source\Network source\IOSLoader source\Launcher source\USB
+SOURCES		:=	source source\Audio source\Patching\7z source\Patching source\Profiler source\Graphics source\Network source\IOSLoader source\Launcher source\USB
 DATA		:=	data
 TEXTURES	:=	textures 
 INCLUDES	:= 
@@ -26,7 +26,7 @@ INCLUDES	:=
 # options for code generation
 #---------------------------------------------------------------------------------
 CFLAGS	=-g -O3 -mrvl -Wall $(MACHDEP) $(INCLUDE) -fpermissive
-CXXFLAGS	=	$(CFLAGS) -std=gnu++0x
+CXXFLAGS	=	$(CFLAGS) -std=gnu++0x -w
 
 LDFLAGS	= -g	$(MACHDEP) -mrvl -Wl,-Map,$(notdir $@).map,--section-start,.init=0x80dfff00
 #---------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ LIBS	:=	 -ldb -lsevenzip -lfat -lwiiuse -lbte -lasnd -logc -lm -ldi -lfreetype -
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	$(CURDIR)
+LIBDIRS	:=	$(CURDIR)/portlibs
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -83,16 +83,17 @@ export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 #---------------------------------------------------------------------------------
 # build a list of include paths
 #---------------------------------------------------------------------------------
-export INCLUDE	:=	$(foreach dir,$(INCLUDES), -iquote $(CURDIR)/$(dir)) \
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-					-I$(CURDIR)/$(BUILD) \
-					-I$(LIBOGC_INC)
+					-I$(CURDIR)/$(BUILD) -I$(LIBOGC_INC) \
+					#-I$(PORTLIBS)/include
 
 #---------------------------------------------------------------------------------
 # build a list of library paths
 #---------------------------------------------------------------------------------
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-					-L$(LIBOGC_LIB)
+					-L$(LIBOGC_LIB) \
+					#-L$(PORTLIBS)/lib
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 .PHONY: $(BUILD) clean

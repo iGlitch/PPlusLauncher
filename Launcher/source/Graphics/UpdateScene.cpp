@@ -766,7 +766,7 @@ bool CUpdateScene::Work()
 							sprintf(result + i * 2, "%02x", hash[i]);
 
 						fProgressPercentage = 1.0f;
-						if (strcmpi(result, updateMD5) == 0)
+						if (strcasecmp(result, updateMD5) == 0)
 						{
 							swprintf(sInfoText, 255, L"Storing update...");
 
@@ -1018,7 +1018,7 @@ bool CUpdateScene::Work()
 							sprintf(result + i * 2, "%02x", hash[i]);
 
 						fProgressPercentage = 1.0f;
-						if (strcmpi(result, updateMD5) == 0)
+						if (strcasecmp(result, updateMD5) == 0)
 						{
 							swprintf(sInfoText, 255, L"Storing update...");
 							fProgressPercentage = 0.0f;

@@ -1,39 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gctypes.h>
 #include <stdio.h>
 #include <gccore.h>
 #include <ogcsys.h>
-
-
 #include "sys.h"
 
 static fstats stats ATTRIBUTE_ALIGN(32);
-
 
 bool AHBRPOT_Patched()
 {
 	return (*HW_AHBPROT == 0xFFFFFFFF);
 }	
 
-bool IsFromHBC()
-{
-	if (!(*((u32*)0x80001800)))
-		return false;
-
-	char * signature = (char *)0x80001804;
-	if (strncmp(signature, "STUBHAXX", 8) == 0)
-	{
-		return true;
-	}
-
-	return false;
-}
-
 u8 *ISFS_GetFile(const char *path, u32 *size, s32 length)
 {
 	*size = 0;
-	//gprintf("ISFS_GetFile %s", path);
 	s32 fd = ISFS_Open(path, ISFS_OPEN_READ);
 	u8 *buf = NULL;
 
@@ -60,14 +43,10 @@ u8 *ISFS_GetFile(const char *path, u32 *size, s32 length)
 	}
 	if (*size > 0)
 	{
-		//gprintf(" succeed!\n");
 		DCFlushRange(buf, *size);
 	}
-	//else
-	//	gprintf(" failed!\n");
 	return buf;
 }
-
 
 bool _isNetworkAvailable()
 {
@@ -78,13 +57,11 @@ bool _isNetworkAvailable()
 	u8 *buf = ISFS_GetFile(ISFS_Filepath, &size, -1);
 	if (buf && size > 4)
 	{
-		retval = buf[4] > 0; // There is a valid connection defined.
+		retval = buf[4] > 0;
 		free(buf);
 	}
 	return retval;
 }
-
-
 
 bool ModeChecked = false;
 bool DolphinMode = false;

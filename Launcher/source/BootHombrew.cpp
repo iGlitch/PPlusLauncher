@@ -43,7 +43,7 @@ extern "C" { void __exception_closeall(); }
 static u8 *homebrewbuffer = EXECUTE_ADDR;
 static u32 homebrewsize = 0;
 static std::vector<std::string> Arguments;
-
+const u32 app_booter_bin_size = 1;
 void AddBootArgument(const char * argv)
 {
 	std::string arg(argv);

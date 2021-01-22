@@ -33,7 +33,6 @@ enum ESceneType
 
 const int STICK_DEADZONE = 25;
 
-
 class GraphicsScene
 {
 public:
@@ -44,7 +43,7 @@ public:
 	virtual void Draw(){};
 	virtual void HandleInputs(u32, s8, s8, s8, s8, u32){};
 
-	virtual bool Work(){};
+	virtual bool Work(){return true;};
 
 	bool IsLoaded() const { return m_bIsLoaded; };
 	virtual ESceneType GetNextSceneType() const { return m_eNextScreen; }
@@ -63,9 +62,6 @@ protected:
 	int m_iMenuSelectionFrame;
 	int m_iMenuSelectionAnimationFrames;
 
-	
-
-
 	f32 m_fMaxNewsScrollFrames;
 	f32 m_fCurrentNewsScrollFrame;
 
@@ -79,6 +75,5 @@ protected:
 private:
 	void drawMenuItemInternal(f32 x, f32 y, f32 width, u8 red, u8 green, u8 blue);
 };
-
 
 #endif

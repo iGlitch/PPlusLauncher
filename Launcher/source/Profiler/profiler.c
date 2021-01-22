@@ -54,7 +54,7 @@
 	void profiler_start(profiler_t* pjob)
 	{
 		pjob->active = 1;
-		pjob->start_time = timer_gettime();
+		pjob->start_time = timer_getthetime();
 	};
 
 	void profiler_stop(profiler_t* pjob)
@@ -63,7 +63,7 @@
 		u64 start_time;
 		u64 duration;
 
-		stop_time = timer_gettime();
+		stop_time = timer_getthetime();
 
 		if (pjob->active)
 		{
@@ -111,13 +111,4 @@
 
 		total_us = __ticks_to_us(pjob->total_time);
 		total_cycles = __ticks_to_cycles(pjob->total_time);
-
-		printf("Profile Job Name: %s\n\n", name);
-		printf("Number of Hits: %d\n\n", hits);
-		printf("Minimum time taken in Microseconds: %lld\n", min_us);
-		printf("Minimum time taken in Cycles: %lld\n\n", min_cycles);
-		printf("Maximum time taken in Microseconds: %lld\n", max_us);
-		printf("Maximum time taken in Cycles: %lld\n\n", max_cycles);
-		printf("Total Time Duration in Microseconds: %lld\n", total_us);
-		printf("Total Time Duration in Cycles: %lld\n", total_cycles);
 	}

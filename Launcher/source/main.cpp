@@ -43,8 +43,6 @@
 #include "Network\networkloader.h"
 #include "Patching\tinyxml2.h"
 
-
-
 #include "tex_default_tpl.h"
 #include "tex_default.h"
 #include "vera_bold_ttf.h"
@@ -70,8 +68,7 @@ static GXTexObj texStylishMTexture;
 TPLFile defaultTPL;
 extern s32 wu_fd;
 void BackToLoader(void);
-bool IsFromHBC();
-
+static s32 iosVersion = 58;
 f32 g_LauncherVersion = 1.14f;
 
 namespace UIThread
@@ -320,8 +317,8 @@ int main(int argc, char **argv)
 	}
 VIDEO_Init();
 	//  	VIDEO_Init();
-	f32 fScreenWidth;
-	f32 fScreenHeight;
+		f32 fScreenWidth = getScreenWidth();
+		f32 fScreenHeight = getScreenHeight();
 	//devHandler.MountSD();
 	//devHandler.MountSD();
 	//devHandler.MountSD();
@@ -415,7 +412,7 @@ Menu:
 		TPL_GetTexture(&defaultTPL, stylishm, &texStylishMTexture);
 	}
 
-	BrstmPlayer* pMusicPlayer;
+	BrstmPlayer* pMusicPlayer = NULL;
 	if (useMusic)
 	{
 		FileHolder brstmFile("sd:/menu_music.brstm", "rb");
@@ -556,24 +553,17 @@ Menu:
 			USBAdapter_Stop();
 		BackToLoader();
 	}
-	exit(0);
-	
 }
 }
 
 void BackToLoader(void)
 {
-	if (IsFromHBC())
-	{
-			WII_Initialize();
-	/* goto HBC */
+	WII_Initialize();
 	WII_LaunchTitle(HBC_LULZ);
 	WII_LaunchTitle(HBC_108);
 	WII_LaunchTitle(HBC_JODI);
 	WII_LaunchTitle(HBC_HAXX);
-		exit(0);
-	}
-	else
-		SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
+	exit(0);
+	//SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
 }
 

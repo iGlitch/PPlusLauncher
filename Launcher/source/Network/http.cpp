@@ -1,4 +1,3 @@
-
 #include "http.h"
 #include <errno.h>
 #include <network.h>
@@ -20,8 +19,6 @@ s32 _httpNetworkComplete(s32 ret, void *usrData)
 	_httpNetInitComplete = true;
 	return 0;
 }
-
-
 
 int downloadFileToBuffer(char * url, char ** buffer, wchar_t * sCurrentInfoText, bool &bForceCancel, f32 &fProgressPercentage)
 {
@@ -382,7 +379,7 @@ bool downloadFileToDisk(char * url, char*out, wchar_t * sCurrentInfoText, bool &
 	s32 count = 0;
 	s32 lastBytesReceivedCount = 0;
 	int downloadBufferSize = 2048;
-	char * downloadBuffer = malloc(downloadBufferSize);
+	char *downloadBuffer = (char *)malloc(downloadBufferSize);
 	s32 bytesRead = s32(0);
 	s32 bytesWritten = s32(0);
 	while (net_get_status() == -EBUSY)

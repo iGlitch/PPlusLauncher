@@ -42,6 +42,6 @@
 //todo, need to find timing info
 //#endif
 
-u64 timer_gettime();
+u64 timer_getthetime();
 
 #endif // __TIMER_H__

@@ -29,7 +29,7 @@
 
 //#ifdef GAMECUBE
 //#ifdef WII
-u64 timer_gettime()
+u64 timer_getthetime()
 {
 	u32 tb_upper;
 	u32 tb_upper1;

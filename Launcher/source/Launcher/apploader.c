@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <ogcsys.h>
 #include <string.h>
@@ -31,7 +30,6 @@ static struct
 	s32 trailersize;
 	s32 padding;
 } apploader_hdr ATTRIBUTE_ALIGN(32);
-void gprintf(){}
 u32 Apploader_Run(u8 vidMode, GXRModeObj *vmode, bool vipatch, bool countryString, u8 patchVidModes, int aspectRatio)
 {
 	void *dst = NULL;
@@ -62,7 +60,6 @@ u32 Apploader_Run(u8 vidMode, GXRModeObj *vmode, bool vipatch, bool countryStrin
 
 	appldr_entry = apploader_hdr.entry;
 	appldr_entry(&appldr_init, &appldr_main, &appldr_final);
-	appldr_init(gprintf);
 
 	while (appldr_main(&dst, &len, &offset))
 	{

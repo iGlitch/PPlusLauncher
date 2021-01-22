@@ -51,8 +51,10 @@ void initValues()
 	config_bytes[1] = 0x00; // video mode
 	config_bytes[2] = 0x07; // hook type
 	config_bytes[3] = 0x00; // file patcher
-	config_bytes[5] = 0x00;	// no paused start
+	config_bytes[4] = 0x01; // cheats
+	config_bytes[5] = 0x00; // no paused start
 	config_bytes[6] = 0x00; // gecko slot b	
+	config_bytes[7] = 0x00; //debugger
 	config_bytes[8] = 0x00; // recovery hook
 	config_bytes[9] = 0x00; // region free
 	config_bytes[10] = 0x00; // no copy
@@ -61,16 +63,6 @@ void initValues()
 	config_bytes[13] = 0x00; // country string patch
 	config_bytes[14] = 0x00; // aspect ratio patch
 	config_bytes[15] = 0x00; // reserved
-	if (geckoattached)
-	{
-		config_bytes[4] = 0x00; // cheat code
-		config_bytes[7] = 0x01; // debugger
-	}
-	else
-	{
-		config_bytes[4] = 0x01;
-		config_bytes[7] = 0x00;
-	}
 	valuesInitialized = true;
 }
 
@@ -89,10 +81,6 @@ void sd_copy_gameconfig(char *gameid) {
 	tempgameconf[defaultgameconfig_size] = '\n';
 	tempgameconfsize = defaultgameconfig_size + 1;
 
-	printf("sd_sd_copy_gameconfig: defaultgameconfig_size value = %08X\n", defaultgameconfig_size);
-	printf("sd_sd_copy_gameconfig: tempgameconfsize value = %08X\n", tempgameconfsize);
-
-
 	fp = fopen(GAMECONFIG, "rb");
 
 	if (fp) {
@@ -106,9 +94,6 @@ void sd_copy_gameconfig(char *gameid) {
 			tempgameconfsize += filesize;
 	}
 
-	printf("sd_sd_copy_gameconfig: filesize value = %08X\n", filesize);
-	printf("sd_sd_copy_gameconfig: tempgameconfsize value = %08X\n", tempgameconfsize);
-
 	// Remove non-ASCII characters
 	numnonascii = 0;
 	for (i = 0; i < tempgameconfsize; i++)
@@ -119,8 +104,6 @@ void sd_copy_gameconfig(char *gameid) {
 			tempgameconf[i - numnonascii] = tempgameconf[i];
 	}
 	tempgameconfsize -= numnonascii;
-
-	printf("sd_sd_copy_gameconfig: tempgameconfsize value = %08X\n", tempgameconfsize);
 
 	*(tempgameconf + tempgameconfsize) = 0;
 	gameconf = (u32 *)((tempgameconf + tempgameconfsize) + (4 - (((u32)(tempgameconf + tempgameconfsize)) % 4)));
@@ -160,13 +143,11 @@ void sd_copy_gameconfig(char *gameid) {
 				if (strncasecmp("DEFAULT", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 7)
 				{
 					gameidmatch = 0;
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s\n", parsebuffer);
 					goto idmatch;
 				}
 				if (strncmp(gameid, parsebuffer, strlen(parsebuffer)) == 0)
 				{
 					gameidmatch += strlen(parsebuffer);
-					printf("sd_sd_copy_gameconfig: gameid value = %s, parsebuffer value = %s\n", gameid, parsebuffer);
 				idmatch:
 					if (gameidmatch > maxgameidmatch2)
 					{
@@ -193,27 +174,21 @@ void sd_copy_gameconfig(char *gameid) {
 				if (strncasecmp("codeliststart", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 13)
 				{
 					sscanf(tempgameconf + i, " = %x", (u32 *)&codelist);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, codelist value = %08X\n", parsebuffer, codelist);
 				}
 				if (strncasecmp("codelistend", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 11)
 				{
 					sscanf(tempgameconf + i, " = %x", (u32 *)&codelistend);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, codelistend value = %08X\n", parsebuffer, codelistend);
 				}
 				if (strncasecmp("hooktype", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 8)
 				{
 					ret = sscanf(tempgameconf + i, " = %u", &temp);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 1)
 					if (temp <= 7)
 						config_bytes[2] = temp;
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, temp value = %d\n", parsebuffer, temp);
-
 				}
 				if (strncasecmp("poke", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 4)
 				{
 					ret = sscanf(tempgameconf + i, "( %x , %x", &codeaddr, &codeval);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 2)
 					{
 						*(gameconf + (gameconfsize / 4)) = 0;
@@ -225,17 +200,11 @@ void sd_copy_gameconfig(char *gameid) {
 						*(gameconf + (gameconfsize / 4)) = codeval;
 						gameconfsize += 4;
 						DCFlushRange((void *)(gameconf + (gameconfsize / 4) - 5), 20);
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X\n", (u32)(gameconf + (gameconfsize / 4) - 5), (u32)(*(gameconf + (gameconfsize / 4) - 5)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X\n", (u32)(gameconf + (gameconfsize / 4) - 4), (u32)(*(gameconf + (gameconfsize / 4) - 4)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X\n", (u32)(gameconf + (gameconfsize / 4) - 3), (u32)(*(gameconf + (gameconfsize / 4) - 3)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeaddr)\n", (u32)(gameconf + (gameconfsize / 4) - 2), (u32)(*(gameconf + (gameconfsize / 4) - 2)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeval)\n", (u32)(gameconf + (gameconfsize / 4) - 1), (u32)(*(gameconf + (gameconfsize / 4) - 1)));
 					}
 				}
 				if (strncasecmp("pokeifequal", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 11)
 				{
 					ret = sscanf(tempgameconf + i, "( %x , %x , %x , %x", &codeaddr, &codeval, &codeaddr2, &codeval2);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 4)
 					{
 						*(gameconf + (gameconfsize / 4)) = 0;
@@ -249,17 +218,11 @@ void sd_copy_gameconfig(char *gameid) {
 						*(gameconf + (gameconfsize / 4)) = codeval2;
 						gameconfsize += 4;
 						DCFlushRange((void *)(gameconf + (gameconfsize / 4) - 5), 20);
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X\n", (u32)(gameconf + (gameconfsize / 4) - 5), (u32)(*(gameconf + (gameconfsize / 4) - 5)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeaddr)\n", (u32)(gameconf + (gameconfsize / 4) - 4), (u32)(*(gameconf + (gameconfsize / 4) - 4)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeval)\n", (u32)(gameconf + (gameconfsize / 4) - 3), (u32)(*(gameconf + (gameconfsize / 4) - 3)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeaddr2)\n", (u32)(gameconf + (gameconfsize / 4) - 2), (u32)(*(gameconf + (gameconfsize / 4) - 2)));
-						printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeval2)\n", (u32)(gameconf + (gameconfsize / 4) - 1), (u32)(*(gameconf + (gameconfsize / 4) - 1)));
 					}
 				}
 				if (strncasecmp("searchandpoke", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 13)
 				{
 					ret = sscanf(tempgameconf + i, "( %x%n", &codeval, &tempoffset);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 1)
 					{
 						gameconfsize += 4;
@@ -285,16 +248,6 @@ void sd_copy_gameconfig(char *gameid) {
 							*(gameconf + (gameconfsize / 4)) = codeval2;
 							gameconfsize += 4;
 							DCFlushRange((void *)(gameconf + (gameconfsize / 4) - temp - 5), temp * 4 + 20);
-							printf("sd_sd_copy_gameconfig: 0x%08X = %08X (temp)\n", (u32)(gameconf + (gameconfsize / 4) - temp - 5),(u32)(*(gameconf + (gameconfsize / 4) - temp - 5)));
-							printf("sd_sd_copy_gameconfig: start at 0x%08X = ", (u32)(gameconf + (gameconfsize / 4) - temp - 4));
-							for (j = temp; j > 0; j--) {
-								printf("%08X ", (u32)(*(gameconf + (gameconfsize / 4) - j - 4)));
-							}
-							printf("(codeval)\n");
-							printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeaddr)\n", (u32)(gameconf + (gameconfsize / 4) - 4), (u32)(*(gameconf + (gameconfsize / 4) - 4)));
-							printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeaddr2)\n", (u32)(gameconf + (gameconfsize / 4) - 3), (u32)(*(gameconf + (gameconfsize / 4) - 3)));
-							printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeoffset)\n", (u32)(gameconf + (gameconfsize / 4) - 2), (u32)(*(gameconf + (gameconfsize / 4) - 2)));
-							printf("sd_sd_copy_gameconfig: 0x%08X = %08X (codeval2)\n", (u32)(gameconf + (gameconfsize / 4) - 1), (u32)(*(gameconf + (gameconfsize / 4) - 1)));
 						}
 						else
 							gameconfsize -= temp * 4 + 4;
@@ -304,7 +257,6 @@ void sd_copy_gameconfig(char *gameid) {
 				if (strncasecmp("videomode", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 9)
 				{
 					ret = sscanf(tempgameconf + i, " = %u", &temp);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 1)
 					{
 						if (temp == 0)
@@ -332,12 +284,10 @@ void sd_copy_gameconfig(char *gameid) {
 							config_bytes[1] = 0x03;
 						}
 					}
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, temp value = %d\n", parsebuffer, temp);
 				}
 				if (strncasecmp("language", parsebuffer, strlen(parsebuffer)) == 0 && strlen(parsebuffer) == 8)
 				{
 					ret = sscanf(tempgameconf + i, " = %u", &temp);
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, ret value = %d\n", parsebuffer, ret);
 					if (ret == 1)
 					{
 						if (temp == 0)
@@ -353,7 +303,6 @@ void sd_copy_gameconfig(char *gameid) {
 							config_bytes[0] = temp - 1;
 						}
 					}
-					printf("sd_sd_copy_gameconfig: parsebuffer value = %s, temp value = %d\n", parsebuffer, temp);
 				}
 				if (tempgameconf[i] != ':')
 				{
@@ -365,7 +314,6 @@ void sd_copy_gameconfig(char *gameid) {
 		}
 	}
 
-	printf("sd_sd_copy_gameconfig: gameconfsize value = %08X\n", gameconfsize);
 	tempcodelist = ((u8 *)gameconf) + gameconfsize;
 }
 
@@ -386,7 +334,6 @@ void sd_copy_codes(char *filename) {
 	closedir(pdir);
 	fflush(stdout);
 
-
 	sprintf(filepath, "sd:/Project+/%s.gct", filename);
 
 	fp = fopen(filepath, "rb");
@@ -395,15 +342,11 @@ void sd_copy_codes(char *filename) {
 		return;
 	}
 
-
 	fseek(fp, 0, SEEK_END);
 	filesize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	codelistsize = filesize;
-	printf("sd_sd_copy_codes: codelistsize value = %08X\n", codelistsize);
-	printf("sd_sd_copy_codes: (codelist + codelistsize) value = %08X\n", (codelist + codelistsize));
-	printf("sd_sd_copy_codes: codelistend value = %08X\n", codelistend);
 
 	if ((codelist + codelistsize) > codelistend)
 	{
@@ -431,7 +374,6 @@ void __Sys_ResetCallback(void)
 	LaunchTitle();
 }
 
-
 u32 GameIOS = 0;
 u32 vmode_reg = 0;
 u32 AppEntrypoint = 0;
@@ -448,41 +390,8 @@ void LaunchTitle()
 {
 	if (!valuesInitialized)
 		initValues();
-	
 
-	/*GXRModeObj *rmode = NULL;
-	static void *xfb = NULL;
-	// Obtain the preferred video mode from the system
-	// This will correspond to the settings in the Wii menu
-	rmode = VIDEO_GetPreferredMode(NULL);
-
-	// Allocate memory for the display in the uncached region
-	xfb = MEM_K0_TO_K1(SYS_AllocateFramebuffer(rmode));
-
-	// Initialise the console, required for printf
-	console_init(xfb, 20, 20, rmode->fbWidth, rmode->xfbHeight, rmode->fbWidth*VI_DISPLAY_PIX_SZ);
-
-	// Set up the video registers with the chosen mode
-	VIDEO_Configure(rmode);
-
-	// Tell the video hardware where our display memory is
-	VIDEO_SetNextFramebuffer(xfb);
-
-	// Make the display visible
-	VIDEO_SetBlack(FALSE);
-
-	// Flush the video register changes to the hardware
-	VIDEO_Flush();
-
-	// Wait for Video setup to complete
-	VIDEO_WaitVSync();
-	if (rmode->viTVMode&VI_NON_INTERLACE) VIDEO_WaitVSync();
-
-	printf("\x1b[2;0H");*/
-	
-	//printf("DVD_SetLowMemPre\n");
 	Disc_SetLowMemPre();
-	//printf("WDVD_Init\n");
 	WDVD_Init();
 	if (Disc_Open() != 0) {
 		//printf("Cannot open disc");
@@ -490,41 +399,19 @@ void LaunchTitle()
 		return 0;
 	}
 	if((*(u32*)Disc_ID & 0xFFFFFF00) == 0x52534200){
-	//printf("Clear GameIdBuffer\n");
 	memset(gameidbuffer, 0, 8);
-	//printf("Point GameIdBuffer\n");
 	memcpy(gameidbuffer, (char*)0x80000000, 6);
-
-	printf("ID: %s\n", gameidbuffer);
-
-	//printf("Codelist\n");
 	codelist = (u8 *)0x800028B8;
-
-	//printf("SDCopyGameConfig\n");
 	sd_copy_gameconfig(gameidbuffer);
-	//printf("SDCopyCodes\n");
 	sd_copy_codes(gameidbuffer);
-	//printf("Shutdown SD\n");
 	__io_wiisd.shutdown();
-
-
 	printf("\x1b[2J");
 
-	/*TinyLoadVideo*/
-
 	configbytes[0] = config_bytes[0];
-	printf("launch_rundisc: configbytes[0] value = %d\n", configbytes[0]);
 	configbytes[1] = config_bytes[1];
-	printf("launch_rundisc: configbytes[1] value = %d\n", configbytes[1]);
 	hooktype = config_bytes[2];
-	printf("launch_rundisc: hooktype value = %d\n", hooktype);
 	debuggerselect = config_bytes[7];
-	printf("launch_rundisc: debuggerselect value = %d\n", debuggerselect);
 	u8 codesselect = config_bytes[4];
-	printf("launch_rundisc: codesselect value = %d\n", codesselect);
-
-	//printf("ocarina_set_codes\n");
-	//ocarina_set_codes
 	code_buf = tempcodelist;
 	code_size = codelistsize;
 
@@ -542,7 +429,6 @@ void LaunchTitle()
 	}
 
 	countryString = config_bytes[13];
-	printf("launch_rundisc: countryString value = %d\n", countryString);
 	switch (config_bytes[1]) {
 	case 0:
 		vidMode = 0;
@@ -557,7 +443,6 @@ void LaunchTitle()
 		vidMode = 4;
 		break;
 	}
-	printf("launch_rundisc: vidMode value = %d\n", vidMode);
 	switch (config_bytes[12]) {
 	case 0:
 		break;
@@ -574,25 +459,17 @@ void LaunchTitle()
 		patchVidModes = 2;
 		break;
 	}
-	printf("launch_rundisc: vipatchselect value = %d\n", vipatchselect);
-	printf("launch_rundisc: patchVidModes value = %d\n", patchVidModes);
 	if (config_bytes[14] > 0)
 		aspectRatio = (int)config_bytes[14] - 1;
-	printf("launch_rundisc: aspectRatio value = %d\n", aspectRatio);
 
 	u32 offset = 0;
-	//printf("Disc FindPartion\n");
 	Disc_FindPartition(&offset);
-	//printf("WDVD OpenPartion\n");
 	WDVD_OpenPartition(offset, &GameIOS);
-	//printf("vmode\n");
 	vmode = Disc_SelectVMode(0, &vmode_reg);
-	//printf("Apploader\n\n");
 	AppEntrypoint = Apploader_Run(vidMode, vmode, vipatchselect, countryString, patchVidModes, aspectRatio);
 
-
 	//load_handler();
-	//printf("load_handler\n\n");
+
 	memcpy((void*)0x80001800, codehandleronly, codehandleronly_size);
 	if (code_size > 0 && code_buf)
 	{
@@ -603,47 +480,15 @@ void LaunchTitle()
 	DCFlushRange((void*)0x80001800, codehandleronly_size);
 	ICInvalidateRange((void*)0x80001800, codehandleronly_size);
 
-	//printf("load multidol\n");
 
 	// Load multidol handler
 	memcpy((void*)0x80001000, multidol, multidol_size);
 	DCFlushRange((void*)0x80001000, multidol_size);
 	ICInvalidateRange((void*)0x80001000, multidol_size);
-	switch (hooktype)
-	{
-	case 0x01:
-		memcpy((void*)0x8000119C, viwiihooks, 12);
-		memcpy((void*)0x80001198, viwiihooks + 3, 4);
-		break;
-	case 0x02:
-		memcpy((void*)0x8000119C, kpadhooks, 12);
-		memcpy((void*)0x80001198, kpadhooks + 3, 4);
-		break;
-	case 0x03:
-		memcpy((void*)0x8000119C, joypadhooks, 12);
-		memcpy((void*)0x80001198, joypadhooks + 3, 4);
-		break;
-	case 0x04:
-		memcpy((void*)0x8000119C, gxdrawhooks, 12);
-		memcpy((void*)0x80001198, gxdrawhooks + 3, 4);
-		break;
-	case 0x05:
-		memcpy((void*)0x8000119C, gxflushhooks, 12);
-		memcpy((void*)0x80001198, gxflushhooks + 3, 4);
-		break;
-	case 0x06:
-		memcpy((void*)0x8000119C, ossleepthreadhooks, 12);
-		memcpy((void*)0x80001198, ossleepthreadhooks + 3, 4);
-		break;
-	case 0x07:
-		memcpy((void*)0x8000119C, axnextframehooks, 12);
-		memcpy((void*)0x80001198, axnextframehooks + 3, 4);
-	}
+	memcpy((void*)0x8000119C, axnextframehooks, 12);
+	memcpy((void*)0x80001198, axnextframehooks + 3, 4);
 	DCFlushRange((void*)0x80001198, 16);
 
-	//printf("ocarina do code\n");
-
-	//ocarina_do_code
 	if (codelist)
 		memset(codelist, 0, (u32)codelistend - (u32)codelist);
 
@@ -653,7 +498,6 @@ void LaunchTitle()
 		DCFlushRange(codelist, (u32)codelistend - (u32)codelist);
 	}
 
-	//printf("apply poke\n");
 	//apply_pokevalues();
 
 	u32 *codeaddr, *codeaddr2, *addrfound = NULL;
@@ -671,10 +515,6 @@ void LaunchTitle()
 					DCFlushRange((void *)*(gameconf + i + 3), 4);
 					if (((u32 *)(*(gameconf + i + 1))) == NULL)
 						;// printf("identify_apply_pokevalues: poke ");
-					else
-						;printf("identify_apply_pokevalues: pokeifequal ");
-					printf("0x%08X = %08X\n",(u32)(*(gameconf + i + 3)), (u32)(*(gameconf + i + 4)));
-				}
 				i += 4;
 			}
 			else
@@ -700,45 +540,29 @@ void LaunchTitle()
 						*(codeaddr + ((*(gameconf + i + *(gameconf + i) + 3)) / 4)) = *(gameconf + i + *(gameconf + i) + 4);
 						if (addrfound == NULL) addrfound = codeaddr;
 						DCFlushRange((void *)(codeaddr + ((*(gameconf + i + *(gameconf + i) + 3)) / 4)), 4);
-						printf("identify_apply_pokevalues: searchandpoke 0x%08X = %08X\n", (u32)((codeaddr + ((*(gameconf + i + *(gameconf + i) + 3)) / 4))), (u32)(*(gameconf + i + *(gameconf + i) + 4)));
 					}
 					codeaddr++;
 				}
 				i += *(gameconf + i) + 4;
 			}
-		}
-	}
+	}}}
+	
 
 	//sleep(1);
-	//sleep(1);
-	//printf("dvd closeing\n");
 	WDVD_Close();
 	//sleep(1);
-	//printf("dvd set low mem\n");
 	Disc_SetLowMem(GameIOS);
-
-	//printf("dvd set time\n");
 	Disc_SetTime();
-
-	//printf("dvd set vmode\n");
 	Disc_SetVMode(vmode, vmode_reg);
-
-	//printf("IRQ Disable\n");
 	u32 level = IRQ_Disable();
-
-	//printf("IOS Shutdown\n");
 	__IOS_ShutdownSubsystems();
-
 	//__exception_closeall();
-	//printf("0xCC003024 = 1\n");
 	*(vu32*)0xCC003024 = 1;
 
 	SYS_SetResetCallback(__Sys_ResetCallback);
 
 	if (AppEntrypoint == 0x3400)
 	{
-		//printf("EntryPoint = 0x3400\n");
-
 		if (hooktype)
 		{
 			asm volatile (
@@ -762,12 +586,9 @@ void LaunchTitle()
 				"rfi\n"
 				);
 		}
-
 	}
 	else
 	{
-		//printf("EntryPoint != 0x3400\n");
-
 		asm volatile (
 			"lis %r3, AppEntrypoint@h\n"
 			"ori %r3, %r3, AppEntrypoint@l\n"
@@ -780,8 +601,6 @@ void LaunchTitle()
 			"bctr\n"
 			);
 	}
-	//printf("IRQ Restore\n");
-
 	IRQ_Restore(level);
 	}
 	else return 0;

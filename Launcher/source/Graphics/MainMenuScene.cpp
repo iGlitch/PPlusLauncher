@@ -65,8 +65,6 @@ void CMainMenuScene::Load()
 		}
 	}
 
-
-
 	showAboutPopup = false;
 	aboutPopup = new Popup(screenwidth, screenheight, 0.90f, 0.55f, 0.40f, 0.75f);
 	aboutPopup->setAnimationFrames(15, true);
@@ -81,11 +79,7 @@ void CMainMenuScene::Load()
 
 
 	aboutPopup->setLineTextItems(2, aboutLine1Text, aboutLine2Text);
-
-
-	m_bIsFromHBC = IsFromHBC();
-
-
+	m_bIsFromHBC = true;
 };
 
 void CMainMenuScene::Unload()

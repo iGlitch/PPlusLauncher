@@ -42,7 +42,6 @@ BrstmPlayer::~BrstmPlayer()
 	free(sound);
 }
 
-
 bool BrstmPlayer::Init()
 {
 	return true;
@@ -134,7 +133,6 @@ static VGMSTREAM * init_vgmstream_brstm(const u8 * streamFile)
 	if (!vgmstream) goto fail;
 
 
-
 	/* fill in the vital statistics */
 	vgmstream->num_samples = read_32bitBE(head_offset + 0x2c, streamFile);
 	vgmstream->sample_rate = (uint16_t)read_16bitBE(head_offset + 0x24, streamFile);
@@ -155,8 +153,6 @@ static VGMSTREAM * init_vgmstream_brstm(const u8 * streamFile)
 		vgmstream->meta_type = meta_RSTM_SPM;
 		vgmstream->sample_rate = 22050;
 	}
-
-
 
 	vgmstream->interleave_block_size = read_32bitBE(head_offset + 0x38, streamFile);
 	vgmstream->interleave_smallblock_size = read_32bitBE(head_offset + 0x48, streamFile);
@@ -495,7 +491,7 @@ void* playThreadFunc(void*)
 {
 	mVgmstream = init_vgmstream_brstm(sound);
 	if (!mVgmstream)
-		return false;
+		return 0;
 	//don't do this for final
 	memcpy(mVgmstream->start_ch, mVgmstream->ch, sizeof(VGMSTREAMCHANNEL)*mVgmstream->channels);
 	memcpy(mVgmstream->start_vgmstream, mVgmstream, sizeof(VGMSTREAM));

@@ -6,7 +6,7 @@
 
 extern GXRModeObj TVNtsc480Int;
 
-GXRModeObj TVPal528Prog = 
+/*GXRModeObj TVPal528Prog = 
 {
     6,      		 // viDisplayMode
     640,             // fbWidth
@@ -75,7 +75,7 @@ GXRModeObj TVPal528ProgSoft =
 	}
 
 };
-
+*/
 GXRModeObj TVPal528ProgUnknown = 
 {
     6,      		 // viDisplayMode
