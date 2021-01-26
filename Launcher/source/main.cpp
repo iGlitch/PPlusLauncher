@@ -415,7 +415,7 @@ Menu:
 	BrstmPlayer* pMusicPlayer = NULL;
 	if (useMusic)
 	{
-		FileHolder brstmFile("sd:/menu_music.brstm", "rb");
+		FileHolder brstmFile("sd:/Project+/launcher/menu_music.brstm", "rb");
 		if (brstmFile.IsOpen())
 		{
 			int len = brstmFile.Size();
