@@ -1,6 +1,7 @@
 #include "Common.h"
 #include <stdio.h>
 #include <string.h>
+#include <gccore.h>
 #include <ctype.h>
 #include "FileHolder.h"
 #include <malloc.h>
