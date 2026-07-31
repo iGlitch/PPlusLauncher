@@ -9,6 +9,7 @@
 #include "Popup.h"
 #include "video.h"
 #include "FreeTypeGX.h"
+#include "../Common.h"
 
 Popup::Popup(f32 screenWidth, f32 screenHeight, f32 initialSizeRatio, f32 widthRatio, f32 heightRatio, f32 textAreaRatio)
 {
@@ -173,7 +174,7 @@ void Popup::draw()
 		GXColor itemBackgroundColor = (GXColor){ 255, 255, 255, u8(255 * animationRatio) };
 		if (i == m_iSelectedIndex)
 		{
-			Menu_DrawRectangle(xPos + ((f32)i * width / (f32)m_iSelectionCount), yPos + (height * m_fTextAreaRatio), width / (f32)m_iSelectionCount, height - (height * m_fTextAreaRatio), (GXColor){ 163, 255, 215, u8(255 * animationRatio) }, true);
+			Menu_DrawRectangle(xPos + ((f32)i * width / (f32)m_iSelectionCount), yPos + (height * m_fTextAreaRatio), width / (f32)m_iSelectionCount, height - (height * m_fTextAreaRatio), (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * animationRatio) }, true);
 			itemBackgroundColor = (GXColor){ 0, 0, 0, u8(255 * animationRatio) };
 		}
 

@@ -8,17 +8,17 @@
 #include <wiiuse/wpad.h>
 #include <dirent.h>
 
-
+#include "../Common.h"
 
 #include "video.h"
 #include "AddonsScene.h"
 #include "stdlib.h"
 #include "FreeTypeGX.h"
-#include "..\Audio\sfx.h"
-#include "..\Patching\tinyxml2.h"
-#include "..\Graphics\FreeTypeGX.h"
+#include "../Audio/sfx.h"
+#include "../Patching/tinyxml2.h"
+#include "../Graphics/FreeTypeGX.h"
 #include "textures.h"
-#include "..\Patching\7z\CreateSubfolder.h"
+#include "../Patching/7z/CreateSubfolder.h"
 
 using namespace tinyxml2;
 
@@ -30,9 +30,12 @@ CAddonsScene::CAddonsScene(f32 w, f32 h)
         m_fScreenHeight = h;
         m_bIsLoaded = false;
         m_iMenuSelectionAnimationFrames = 15;
-        m_fMaxNewsScrollFrames = f32(60 * 30);
+        m_fMaxNewsScrollFrames = f32(60 * 25);
         m_fCurrentNewsScrollFrame = f32(-1);
         enumeratedFiles = false;
+        m_bShowScrollbar = false;
+        m_fScrollbarHeight = 0.0f;
+        m_fScrollbarY = 0.0f;
 
 };
 
@@ -81,7 +84,7 @@ void CAddonsScene::Unload()
 
 void CAddonsScene::HandleInputs(u32 gcPressed, s8 dStickX, s8 dStickY, s8 cStickX, s8 cStickY, u32 wiiPressed)
 {
-        if (m_iDrawFrameNumber < 60 || m_iMenuSelectedIndex == -2 || installIndex != -1)
+        if (m_iDrawFrameNumber < 30 || m_iMenuSelectedIndex == -2 || installIndex != -1)
                 return;
         if (m_iMenuSelectedIndex == -1)
         {
@@ -164,7 +167,7 @@ void CAddonsScene::Draw()
 
 
 
-        if (m_iDrawFrameNumber <= 60)
+        if (m_iDrawFrameNumber <= 30)
                 m_iDrawFrameNumber++;
 
         //swprintf(sInfoText, 255, L"menu %d", m_iMenuSelectedIndex);
@@ -187,8 +190,13 @@ void CAddonsScene::drawSelectionMenu(float yPos)
         f32 heightRatio = 1.00f;
 
 
-        f32 finalWidth = m_fScreenWidth * widthRatio;
+        f32 baseWidth = m_fScreenWidth * widthRatio;
         f32 finalHeight = 280 * heightRatio;
+        
+        UpdateScrollbarState(yPos, finalHeight);
+        
+        f32 scrollbarWidth = m_bShowScrollbar ? 12.0f : 0.0f;
+        f32 finalWidth = baseWidth - scrollbarWidth;
 
         //f32 xFinalPos = m_fScreenWidth * (1.0f - widthRatio) * 0.50f;
         //f32 yFinalPos = m_fScreenHeight * (1.0f - heightRatio) * 0.50f;
@@ -231,8 +239,8 @@ void CAddonsScene::drawSelectionMenu(float yPos)
                         endPosition = addonFiles.size();
                 for (int i = initialPosition; i < endPosition; i++)
                 {
-                        if (m_iMenuSelectedIndex == i)
-                                Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ 163, 255, 215, u8(255 * animationRatio) }, true);
+                        if (m_iMenuSelectedIndex == i && m_iDrawFrameNumber >= 20)
+                                Menu_DrawRectangle(xPos, yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount), width, rowHeight, (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * animationRatio) }, true);
 
                         AddonFile * f = addonFiles[i];
                         ChangeFontSize(18);
@@ -240,7 +248,7 @@ void CAddonsScene::drawSelectionMenu(float yPos)
                                 fontSystem[18] = new FreeTypeGX(18);
 
                         auto text = charToWideChar(f->title);
-                        if (m_iMenuSelectedIndex == i)
+                        if (m_iMenuSelectedIndex == i && m_iDrawFrameNumber >= 20)
                                 fontSystem[18]->drawText(xPos + (width * 0.01f), yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount) + (rowHeight * .5f), text, (GXColor){ 0x00, 0x00, 0x00, 0xff }, FTGX_JUSTIFY_LEFT | FTGX_ALIGN_MIDDLE);
                         else
                                 fontSystem[18]->drawText(xPos + (width * 0.01f), yPos + ((f32)(i % separatorCount) * height / (f32)separatorCount) + (rowHeight * .5f), text, (GXColor){ 0xff, 0xff, 0xff, 0xff }, FTGX_JUSTIFY_LEFT | FTGX_ALIGN_MIDDLE);
@@ -256,18 +264,21 @@ void CAddonsScene::drawSelectionMenu(float yPos)
 
                         case ADDON_FILE_STATE_INCOMPLETE:
                         case ADDON_FILE_STATE_CONFLICTING:
-                                drawTexturedBox(&addonConflict, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
+                                if (isTexturesLoaded())
+                                        drawTexturedBox(&addonConflict, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
                                 if (installIndex == -1)
                                         swprintf(sInfoText, 255, L"Addon is not properly installed. Select to reinstall.");
                                 break;
                         case ADDON_FILE_STATE_UPGRADE:
                         case ADDON_FILE_STATE_NOT_INSTALLED:
-                                drawTexturedBox(&addonNotInstalled, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
+                                if (isTexturesLoaded())
+                                        drawTexturedBox(&addonNotInstalled, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
                                 if (installIndex == -1)
                                         swprintf(sInfoText, 255, L"Install this addon.");
                                 break;
                         case ADDON_FILE_STATE_INSTALLED:
-                                drawTexturedBox(&addonInstalled, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
+                                if (isTexturesLoaded())
+                                        drawTexturedBox(&addonInstalled, texX, texY, texWidth, texHeight, 255, 255, 255, 255);
                                 if (installIndex == -1)
                                         swprintf(sInfoText, 255, L"Uninstall this addon.");
                                 break;
@@ -284,9 +295,63 @@ void CAddonsScene::drawSelectionMenu(float yPos)
         }
 
         Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 255, 255, 255, u8(255 * animationRatio) }, false);
-
+        UpdateScrollbarState(yPos, height);
+        drawScrollbar(xPos, yPos, width, height, animationRatio);
 
         //drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
+}
+
+void CAddonsScene::UpdateScrollbarState(f32 menuY, f32 menuHeight)
+{
+	m_bShowScrollbar = (addonFiles.size() > 5);
+
+	if (!m_bShowScrollbar)
+	{
+		m_fScrollbarHeight = 0.0f;
+		m_fScrollbarY = 0.0f;
+		return;
+	}
+
+	f32 visibleRatio = 5.0f / (f32)addonFiles.size();
+	m_fScrollbarHeight = menuHeight * visibleRatio;
+	
+	if (m_fScrollbarHeight < 10.0f)
+		m_fScrollbarHeight = 10.0f;
+
+	if (m_iMenuSelectedIndex >= 0)
+	{
+		int currentPage = m_iMenuSelectedIndex / 5;
+		int totalPages = (addonFiles.size() + 4) / 5;
+		
+		if (currentPage >= totalPages)
+			currentPage = totalPages - 1;
+		
+		f32 scrollableHeight = menuHeight - m_fScrollbarHeight;
+		f32 scrollPosition = (f32)currentPage / (f32)(totalPages - 1);
+
+		m_fScrollbarY = menuY + (scrollPosition * scrollableHeight);
+	}
+	else
+	{
+		m_fScrollbarY = menuY;
+	}
+}
+
+void CAddonsScene::drawScrollbar(f32 menuX, f32 menuY, f32 menuWidth, f32 menuHeight, f32 animationRatio)
+{
+	if (!m_bShowScrollbar || animationRatio <= 0.0f)
+		return;
+
+	f32 originalMenuWidth = menuWidth + 12.0f;
+
+	f32 scrollbarWidth = 12.0f;
+	f32 scrollbarX = menuX + originalMenuWidth - scrollbarWidth;
+
+	Menu_DrawRectangle(scrollbarX, menuY, scrollbarWidth, menuHeight, 
+					   (GXColor){255, 255, 255, u8(255 * animationRatio)}, false);
+	
+	Menu_DrawRectangle(scrollbarX, m_fScrollbarY, scrollbarWidth, m_fScrollbarHeight,
+					   (GXColor){255, 255, 255, u8(255 * animationRatio)}, true);
 }
 
 bool CAddonsScene::Work()
@@ -352,8 +417,10 @@ bool CAddonsScene::Work()
                 swprintf(sInfoText, 255, L"Searching for local addons...");
                 struct dirent *pent;
                 struct stat statbuf;
-                CreateSubfolder("sd:/Project+/launcher/addons");
-                DIR * addonsFolder = opendir("sd:/Project+/launcher/addons/");
+                char addonsPath[ISFS_MAXPATH];
+                snprintf(addonsPath, sizeof(addonsPath), "%s/launcher/addons", codesBasePath);
+                CreateSubfolder(addonsPath);
+                DIR * addonsFolder = opendir(addonsPath);
 
                 if (!addonsFolder) {
                         swprintf(sInfoText, 255, L"Cannot open addons folder!");
@@ -376,8 +443,8 @@ bool CAddonsScene::Work()
                                 continue;
 
                         filesChecked++;
-                        char fullFilePath[255];
-                        sprintf(fullFilePath, "sd:/Project+/launcher/addons/%s", pent->d_name);
+                        char fullFilePath[ISFS_MAXPATH];
+                        snprintf(fullFilePath, sizeof(fullFilePath), "%s/launcher/addons/%s", codesBasePath, pent->d_name);
 
                         if (stat(fullFilePath, &statbuf) != 0) {
                                 swprintf(sInfoText, 255, L"Cannot stat %s", pent->d_name);

@@ -29,7 +29,7 @@ CTestScene::CTestScene(f32 w, f32 h)
 	m_fScreenHeight = h;
 	m_bIsLoaded = false;
 	m_iMenuSelectionAnimationFrames = 15;
-	m_fMaxNewsScrollFrames = f32(60 * 30);
+	m_fMaxNewsScrollFrames = f32(60 * 25);
 	m_fCurrentNewsScrollFrame = f32(-1);
 
 
@@ -65,7 +65,7 @@ void CTestScene::Unload()
 
 void CTestScene::HandleInputs(u32 gcPressed, s8 dStickX, s8 dStickY, s8 cStickX, s8 cStickY, u32 wiiPressed)
 {
-	if (m_iDrawFrameNumber < 60)
+	if (m_iDrawFrameNumber < 30)
 		return;
 
 	if (gcPressed & PAD_BUTTON_B || wiiPressed & WPAD_BUTTON_B)
@@ -112,7 +112,7 @@ void CTestScene::Draw()
 
 
 
-	if (m_iDrawFrameNumber <= 60)
+	if (m_iDrawFrameNumber <= 30)
 		m_iDrawFrameNumber++;
 
 	//swprintf(sInfoText, 255, L"menu %d", m_iMenuSelectedIndex);

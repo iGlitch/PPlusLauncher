@@ -167,8 +167,8 @@ InitVideo()
 	screenwidth = vmode->viWidth;
 
 	// Allocate the video buffers
-	xfb[0] = (u32 *)SYS_AllocateFramebuffer(vmode);
-	xfb[1] = (u32 *)SYS_AllocateFramebuffer(vmode);
+	xfb[0] = (u32 *)MEM_K0_TO_K1(SYS_AllocateFramebuffer(vmode));
+	xfb[1] = (u32 *)MEM_K0_TO_K1(SYS_AllocateFramebuffer(vmode));
 	gp_fifo = memalign(32, DEFAULT_FIFO_SIZE);
 	memset(gp_fifo, 0, DEFAULT_FIFO_SIZE);
 	GX_Init(gp_fifo, DEFAULT_FIFO_SIZE);

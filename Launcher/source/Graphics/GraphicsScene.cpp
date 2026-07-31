@@ -1,6 +1,7 @@
 #include "GraphicsScene.h"
-#include "..\Network\networkloader.h"
+#include "../Network/networkloader.h"
 #include "textures.h"
+#include "../Common.h"
 
 void GraphicsScene::drawNewsBox(f32 & yPos, f32 offset, f32 height)
 {
@@ -43,7 +44,8 @@ void GraphicsScene::drawNewsBox(f32 & yPos, f32 offset, f32 height)
 	drawBox(0.0f, yPos + offset, m_fScreenWidth, 2, 255, 255, 255, 255);
 	yPos += 2.0f;
 
-	drawTexturedBox(&logoTexture, 25, 12 + offset, 180, 60, 255, 255, 255, 255);
+	if (isTexturesLoaded())
+		drawTexturedBox(&logoTexture, 25, 12 + offset, 180, 60, 255, 255, 255, 255);
 
 }
 
@@ -70,10 +72,11 @@ void GraphicsScene::drawMenuItem(f32 x, f32 y, f32 itemWidth, f32 textureWidth, 
 	drawMenuItemInternal((itemWidth + 31) *(slideInAnimationRatio - 1.0f), y, itemWidth, u8(0), u8(0), u8(0));
 	if (selected)
 	{
-		drawMenuItemInternal((itemWidth + 31) * (slideInAnimationRatio - 1.0f), y - (5 * selectionAnimationRatio), itemWidth - (10 * selectionAnimationRatio), 163, 255, 215);
-		drawTexturedBox(texture, itemWidth - (10 * selectionAnimationRatio) - textureWidth + offset, y + 10 - (5 * selectionAnimationRatio), textureWidth, textureHeight, u8(0), u8(0), u8(0), 255);
+		drawMenuItemInternal((itemWidth + 31) * (slideInAnimationRatio - 1.0f), y - (5 * selectionAnimationRatio), itemWidth - (10 * selectionAnimationRatio), selectionColor.r, selectionColor.g, selectionColor.b);
+		if (isTexturesLoaded())
+			drawTexturedBox(texture, (itemWidth - (10 * selectionAnimationRatio) - textureWidth + offset) + (itemWidth - (10 * selectionAnimationRatio) - textureWidth + offset + textureWidth) *(slideInAnimationRatio - 1.0f), y + 10 - (5 * selectionAnimationRatio), textureWidth, textureHeight, u8(0), u8(0), u8(0), 255);
 	}
-	else
+	else if (isTexturesLoaded())
 		drawTexturedBox(texture, (itemWidth - textureWidth + offset) + (itemWidth - textureWidth + offset + textureWidth) *(slideInAnimationRatio - 1.0f), y + 10, textureWidth, textureHeight, 255, 255, 255, 255);
 
 }
@@ -89,10 +92,10 @@ void GraphicsScene::drawMenuItemInternal(f32 x, f32 y, f32 width, u8 red, u8 gre
 	GX_Position3f32(x + width + 18, y, 0.0f);	// Top Right
 	GX_Color4u8(red, green, blue, 255);
 
-	GX_Position3f32(x + width, y + 58, 0.0f);	// Bottom Right	
+	GX_Position3f32(x + width, y + 48, 0.0f);	// Bottom Right	
 	GX_Color4u8(red, green, blue, 255);
 
-	GX_Position3f32(x, y + 58, 0.0f);			// Bottom Left
+	GX_Position3f32(x, y + 48, 0.0f);			// Bottom Left
 	GX_Color4u8(red, green, blue, 255);
 
 	GX_End();
@@ -102,7 +105,7 @@ void GraphicsScene::drawMenuItemInternal(f32 x, f32 y, f32 width, u8 red, u8 gre
 	GX_Position3f32(x + width + 18, y, 0.0f);		// Top Right
 	GX_Color4u8(red, green, blue, 255);
 
-	GX_Position3f32(x + width, y + 58, 0.0f);		// Bottom Right	
+	GX_Position3f32(x + width, y + 48, 0.0f);		// Bottom Right	
 	GX_Color4u8(red, green, blue, 255);
 
 	GX_Position3f32(x + width + 31, y + 15, 0.0f);	// Bottom Right	

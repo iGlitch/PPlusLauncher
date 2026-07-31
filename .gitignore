@@ -1,3 +1,5 @@
 Launcher/build
 Launcher/boot.dol
 Launcher/boot.elf
+Launcher/textures.tpl
+Launcher/*.zip

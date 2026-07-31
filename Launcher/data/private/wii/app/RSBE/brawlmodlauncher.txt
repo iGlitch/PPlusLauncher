@@ -1,0 +1,1 @@
+Path to the launcher boot.dol uses the name of this text file, as SD:/apps/(name)/boot.dol

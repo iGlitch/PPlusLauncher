@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <launcher>
+        <config>
+            <global>
+                <loadMethod>auto</loadMethod>
+                <autoBoot>false</autoBoot>
+                <useGCPads>true</useGCPads>
+                <useWiiPads>true</useWiiPads>
+                <useNetwork>true</useNetwork>
+                <useSoundEffects>true</useSoundEffects>
+                <useMusic>true</useMusic>
+                <debugToFile>false</debugToFile>
+            </global>
+            <wii/>
+            <dolphin>
+                <!-- Use of Audio on Dolphin requires LLE -->
+                <useSoundEffects>false</useSoundEffects>
+                <useMusic>false</useMusic>
+            </dolphin>
+        </config>
+    </launcher>
+</root>

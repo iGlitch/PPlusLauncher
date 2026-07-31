@@ -17,9 +17,9 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	source source\Audio source\Patching\7z source\Patching source\Profiler source\Graphics source\Network source\IOSLoader source\Launcher source\USB
+SOURCES		:=	source source/Audio source/Patching/7z source/Patching source/Graphics source/Network source/IOSLoader source/USB
 DATA		:=	data
-TEXTURES	:=	textures 
+TEXTURES	:=	textures
 INCLUDES	:= 
 
 #---------------------------------------------------------------------------------
@@ -48,6 +48,7 @@ ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export TEXSRCDIR	:=	$(CURDIR)/textures
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 					$(foreach dir,$(DATA),$(CURDIR)/$(dir)) \
@@ -58,6 +59,7 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 #---------------------------------------------------------------------------------
 # automatically build a list of object files for our project
 #---------------------------------------------------------------------------------
+# Note: Disc loading code moved to unused/ folder (handled by loader.dol)
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
@@ -65,8 +67,6 @@ SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 DOLFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.dol)))
 ELFFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.elf)))
-SCFFILES	:=	$(foreach dir,$(TEXTURES),$(notdir $(wildcard $(dir)/*.scf)))
-TPLFILES	:=	$(SCFFILES:.scf=.tpl)
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -78,7 +78,6 @@ else
 endif
 
 export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
-					$(addsuffix .o,$(TPLFILES)) \
 					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) \
 					$(sFILES:.s=.o) $(SFILES:.S=.o)
 
@@ -98,12 +97,13 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 					#-L$(PORTLIBS)/lib
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
-.PHONY: $(BUILD) clean
+.PHONY: $(BUILD) clean run textures
 
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@echo "Note: To regenerate textures.tpl from PNG sources, use 'make textures'"
 
 #---------------------------------------------------------------------------------
 clean:
@@ -114,6 +114,19 @@ clean:
 run:
 	wiiload $(TARGET).dol
 
+#---------------------------------------------------------------------------------
+textures:
+	@echo "=========================================="
+	@echo "WARNING: gxtexconv pads textures to power-of-2 dimensions!"
+	@echo "After generation, you must manually edit textures.tpl to"
+	@echo "replace padded dimensions with actual dimensions."
+	@echo "=========================================="
+	@[ -d $(BUILD) ] || mkdir -p $(BUILD)
+	@gxtexconv -s $(TEXSRCDIR)/textures.scf -o $(CURDIR)/textures.tpl
+	@[ -f textures.h ] && mv textures.h $(TEXSRCDIR)/textures.h || true
+	@echo ""
+	@echo "Generated: textures.tpl"
+	@echo "Remember to manually fix the padded dimensions!"
 
 #---------------------------------------------------------------------------------
 else

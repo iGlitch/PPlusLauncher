@@ -2,7 +2,7 @@
 #define _APPLYPATCH_H_
 
 #include "ARC.h"
-#include "7z\7ZipFile.h"
+#include "7z/7ZipFile.h"
 #include "bspatch.h"
 #define MAX_RESOURCE_COUNT 100
 

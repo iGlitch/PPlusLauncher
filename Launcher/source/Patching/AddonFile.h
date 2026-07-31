@@ -11,7 +11,7 @@
 #endif
 #include <string.h>
 #include <stdio.h>
-#include "7z\7ZipFile.h"
+#include "7z/7ZipFile.h"
 
 
 enum AddonFileState

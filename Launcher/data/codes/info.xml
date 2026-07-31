@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <game>
+    <name>Brawl Mod</name>
+    <version>2.0</version>
+  </game>
+  <launcher>
+	<selectionColor r="161" g="229" b="255"/>
+	<musicPath>project m/launcher.brstm</musicPath>
+    <updateUrl>https://github.com/iGlitch/BrawlModLauncher/tree/main/Launcher/data/codes/launcher/update.xml</updateUrl>
+  </launcher>
+</root>

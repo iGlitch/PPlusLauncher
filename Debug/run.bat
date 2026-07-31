@@ -46,14 +46,14 @@ echo server: %url%
 echo generating update.xml
 (
   echo ^<root^>
-  echo 	^<projectm^>
+  echo 	^<game^>
   echo 		^<update updateVersion="%patch%" length="%size%" md5="%md5%"^>
   echo 			^<baseVersionsSupported^>
   echo 				^<baseVersion^>%base%^</baseVersion^>
   echo 			^</baseVersionsSupported^>
   echo 			^<url^>%url%%xx%update-%base%-%patch%.7z^</url^>
   echo 		^</update^>
-  echo 	^</projectm^>
+  echo 	^</game^>
   echo 	^<launcher^>
   echo 		^<update updateVersion="" length="" md5=""^>
   echo 		^<baseVersionsSupported^>

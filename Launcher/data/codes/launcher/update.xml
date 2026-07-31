@@ -1,0 +1,19 @@
+<root>
+	<game>
+		<update updateVersion="" length="" md5="">
+			<baseVersionsSupported>
+				<baseVersion>*</baseVersion>
+			</baseVersionsSupported>
+			<url></url>
+		</update>
+	</game>
+	<launcher>
+		<update updateVersion="" length="" md5="">
+		<baseVersionsSupported>
+			<baseVersion>*</baseVersion>
+		</baseVersionsSupported>
+		<url></url>
+		</update>
+	</launcher>
+	<news>Setup a url to update.xml to customize this message and updates for your build. Check the wiki for more infomation.</news>
+</root>

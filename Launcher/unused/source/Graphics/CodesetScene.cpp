@@ -160,7 +160,8 @@ void CPatchScene::Draw()
 	yPos += 2.0f;
 
 	//Top Left Logo
-	drawTexturedBox(&logoTexture, 25, 12 + offset, 180, 60, 255, 255, 255, 255);
+	if (isTexturesLoaded())
+		drawTexturedBox(&logoTexture, 25, 12 + offset, 180, 60, 255, 255, 255, 255);
 	yPos += 20.0f;
 
 
@@ -298,7 +299,7 @@ void CPatchScene::drawProgressBar()
 	height = initialSizeRatio * finalHeight + ((1.0f - initialSizeRatio) * finalHeight * animationRatio);
 
 	Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 0, 0, 0, u8(178 * animationRatio) }, true);
-	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 163, 255, 215, u8(255 * animationRatio) }, true);
+	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * animationRatio) }, true);
 
 	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
 }
@@ -335,7 +336,7 @@ void CPatchScene::drawCancelPopup()
 
 	if (cancelPopupSelectedIndex == 0)
 	{
-		Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 163, 255, 215, u8(255 * popupAanimationRatio) }, true);
+		Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * popupAanimationRatio) }, true);
 		fontSystem[16]->drawText(xPos + (width / 4.0f), yPos + (height * (textAreaRatio + ((1 - textAreaRatio) * 0.50f))), L"Yes", (GXColor){ 0, 0, 0, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER | FTGX_ALIGN_MIDDLE);
 	}
 	else
@@ -343,7 +344,7 @@ void CPatchScene::drawCancelPopup()
 
 	if (cancelPopupSelectedIndex == 1)
 	{
-		Menu_DrawRectangle(xPos + (width / 2.0f), yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ 163, 255, 215, u8(255 * popupAanimationRatio) }, true);
+		Menu_DrawRectangle(xPos + (width / 2.0f), yPos + (height * textAreaRatio), width / 2.0f, height - (height * textAreaRatio), (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * popupAanimationRatio) }, true);
 		fontSystem[16]->drawText(xPos + (width / 4.0f) + (width / 2.0f), yPos + (height * (textAreaRatio + ((1 - textAreaRatio) * 0.50f))), L"No", (GXColor){ 0, 0, 0, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER | FTGX_ALIGN_MIDDLE);
 	}
 	else
@@ -354,13 +355,15 @@ void CPatchScene::drawCancelPopup()
 	Menu_DrawRectangle(xPos, yPos + (height * textAreaRatio), width, 1.0f, (GXColor){ 125, 125, 125, u8(255 * popupAanimationRatio) }, true);
 	Menu_DrawRectangle(m_fScreenWidth / 2.0f, yPos + (height * textAreaRatio), 1.0f, height - (height * textAreaRatio), (GXColor){ 125, 125, 125, u8(255 * popupAanimationRatio) }, true);
 
-	//fontSystem[16]->drawText(screenWidth / 2.0f, yPos + 35.0f, L"Install Project+ to your SD card?", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
+	//wchar_t installText[128];
+	//swprintf(installText, 128, L"Install %hs to your SD card?", projectName);
+	//fontSystem[16]->drawText(m_fScreenWidth / 2.0f, yPos + 35.0f, installText, (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
 	fontSystem[16]->drawText(m_fScreenWidth / 2.0f, yPos + 60.0f, L"Are you sure you want to cancel the installation?", (GXColor){ 255, 255, 255, u8(255 * popupAanimationRatio) }, FTGX_JUSTIFY_CENTER);
-	//fontSystem[16]->drawText(screenWidth / 2.0f, yPos + 85.0f, L"Installation can take up to 15 minutes.", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
+	//fontSystem[16]->drawText(m_fScreenWidth / 2.0f, yPos + 85.0f, L"Installation can take up to 15 minutes.", (GXColor){ 255, 255, 255, 255 * popupAanimationRatio }, FTGX_JUSTIFY_CENTER);
 
 
 
-	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
+	//drawBox(0, 0, m_fScreenWidth, m_fScreenHeight, 0, 0, 0, 178);	
 }
 
 

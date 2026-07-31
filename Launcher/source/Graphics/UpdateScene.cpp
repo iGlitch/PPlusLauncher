@@ -9,30 +9,38 @@
 #include <dirent.h>
 #include <vector>
 #include <memory>
+#include <cstdio>
 
 
 #include "video.h"
-#include "tex_logo_tpl.h"
-#include "tex_logo.h"
 #include "UpdateScene.h"
 #include "FreeTypeGX.h"
 #include "textures.h"
 
-#include "..\Network\http.h"
-#include "..\Network\networkloader.h"
-#include "..\Audio\sfx.h"
-#include "..\Patching\Patcher.h"
-#include "..\Patching\tinyxml2.h"
-#include "..\Patching\md5.h"
-#include "..\Patching\7z\CreateSubfolder.h"
-#include "..\Patching\7z\7ZipFile.h"
-#include "..\IOSLoader\sys.h"
-#include "..\FileHolder.h"
-#include "..\Common.h"
+#include "../Network/http.h"
+#include "../Network/networkloader.h"
+#include "../Audio/sfx.h"
+#include "../Patching/Patcher.h"
+#include "../Patching/tinyxml2.h"
+#include "../Patching/md5.h"
+#include "../Patching/7z/CreateSubfolder.h"
+#include "../Patching/7z/7ZipFile.h"
+#include "../IOSLoader/sys.h"
+#include "../FileHolder.h"
+#include "../Common.h"
 
 extern f32 g_LauncherVersion;
 
 bool setDownloadProgress(void *obj, int size, int position);
+
+f32 parseVersion(const char* versionStr) {
+    if (!versionStr) return 0.0f;
+    
+    float major = 0.0f, minor = 0.0f, patch = 0.0f;
+    int parsed = sscanf(versionStr, "%f.%f.%f", &major, &minor, &patch);
+    
+    return (parsed >= 2) ? major + minor/100.0f + patch/10000.0f : atof(versionStr);
+}
 
 CUpdateScene::CUpdateScene(f32 w, f32 h)
 {
@@ -43,7 +51,7 @@ CUpdateScene::CUpdateScene(f32 w, f32 h)
 	m_fScreenHeight = h;
 	m_bIsLoaded = false;
 	m_iMenuSelectionAnimationFrames = 15;
-	m_fMaxNewsScrollFrames = 1800.0F;
+	m_fMaxNewsScrollFrames = 1500.0F;
 	m_fCurrentNewsScrollFrame = -1.0F;
 
 	fProgressPercentage = 0.0F;
@@ -70,7 +78,6 @@ void CUpdateScene::Load()
 	infoFileMissingPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
 	infoFileMissingPopup->setAnimationFrames(15, true);
 	infoFileMissingPopup->setSelectionTextItems(0, 2, L"Yes", L"No");
-	infoFileMissingPopup->setLineTextItems(3, L"The Project+ info.xml file was not", L"found. Do you have an unmodified ", L"installation of Project+ 2.2?");
 
 	showCancelPopup = false;
 	cancelPopup = new Popup(m_fScreenWidth, m_fScreenHeight, 0.90f, 0.55f, 0.40f, 0.75f);
@@ -404,31 +411,20 @@ bool CUpdateScene::Work()
 	//if (showConfirmLaunchPopup)return false;
 	m_eNextScreen = SCENE_MAIN_MENU;
 	swprintf(sInfoText, 255, L"Reading local info.xml file...");
-	//Look for sd:/Project+/info.xml
-	f32 pmCurrentVersion = 0.0f;
+	//Look for codespath/info.xml
+	f32 pmCurrentVersion = gameVersion;
+	const char * pmCurrentVersionStr = gameVersionStr[0] ? gameVersionStr : nullptr;
 	f32 launcherCurrentVersion = g_LauncherVersion;
-
-	tinyxml2::XMLDocument infoDoc;
-	if (infoFileSize != 0 && infoDoc.Parse((char *)infoFileData, infoFileSize) == (int)tinyxml2::XML_NO_ERROR)
-	{
-		tinyxml2::XMLElement* cur = infoDoc.RootElement();
-		if (cur)
-		{
-			cur = cur->FirstChildElement("game");
-			if (cur)
-			{
-				cur = cur->FirstChildElement("version");
-				if (cur && cur->FirstChild() && cur->FirstChild()->ToText())
-				{
-					const char* text = cur->FirstChild()->ToText()->Value();
-					pmCurrentVersion = (f32)atof(text);
-				}
-			}
-		}
-	}
 	if (pmCurrentVersion == 0.0F)
 	{
 		m_bForcePMVersion300 = false;
+		
+		wchar_t line1[256], line2[256], line3[256];
+		swprintf(line1, 256, L"%hs info.xml file was not found.", projectName);
+		wcscpy(line2, L"Do you have an unmodified ");
+		swprintf(line3, 256, L"installation of %hs?", projectName);
+		infoFileMissingPopup->setLineTextItems(3, line1, line2, line3);
+		
 		showInfoFileMissingPopup = true;
 		while (showInfoFileMissingPopup)
 			SleepDuringWork(1);
@@ -449,7 +445,9 @@ bool CUpdateScene::Work()
 		launcherUpdateVersion = 0.0f;
 		struct dirent *pent;
 		struct stat statbuf;
-		DIR * pmUpdateFolder = opendir("sd:/Project+/launcher/updates/");
+		char updatesPath[ISFS_MAXPATH];
+		sprintf(updatesPath, "%s/launcher/updates/", codesBasePath);
+		DIR * pmUpdateFolder = opendir(updatesPath);
 		while ((pent = readdir(pmUpdateFolder)) != NULL) {
 			stat(pent->d_name, &statbuf);
 			if (strcmp(".", pent->d_name) == 0 ||
@@ -525,7 +523,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/Project+/launcher/updates/%s", launcherUpdateFileName);
+				sprintf(fullFilePath, "%s/launcher/updates/%s", codesBasePath, launcherUpdateFileName);
 
 
 				if (m_bCancelUpdate)
@@ -564,7 +562,7 @@ bool CUpdateScene::Work()
 			if (m_bInstallUpdate)
 			{
 				char fullFilePath[255];
-				sprintf(fullFilePath, "sd:/Project+/launcher/updates/%s", pmUpdateFileName);
+				sprintf(fullFilePath, "%s/launcher/updates/%s", codesBasePath, pmUpdateFileName);
 				if (!PMPatchVerify(fullFilePath, sInfoText, m_bCancelUpdate, fProgressPercentage))
 				{
 					m_bInstallUpdate = false;
@@ -583,7 +581,7 @@ bool CUpdateScene::Work()
 				if (m_bCancelUpdate)
 					return false;
 
-				swprintf(sInfoText, 50, L"Project+: v%4.2f installed", pmUpdateVersion);
+				swprintf(sInfoText, 50, L"%s: v%4.2f installed", projectName, pmUpdateVersion);
 				loadInfoFile();
 				pmCurrentVersion = pmUpdateVersion;
 				m_bInstallUpdate = false;
@@ -606,9 +604,8 @@ bool CUpdateScene::Work()
 	do{
 		launcherUpdateVersion = 0.0f;
 		swprintf(sInfoText, 255, L"Downloading update file...");
-		//random lock ups
 		if (xmlBuffer) { free(xmlBuffer); xmlBuffer = NULL; }
-		xmlBufferSize = downloadFileToBuffer("https://launcher.brawlminus.net/projplus/updater/update.xml", &xmlBuffer, sInfoText, m_bCancelUpdate, fProgressPercentage);
+		xmlBufferSize = downloadFileToBuffer(updateUrl, &xmlBuffer, sInfoText, m_bCancelUpdate, fProgressPercentage);
 		if (xmlBufferSize <= 0)
 		{
 			swprintf(sInfoText, 255, L"Download failed. Retrying...");
@@ -654,7 +651,7 @@ bool CUpdateScene::Work()
 				int count = 0;
 				do
 				{
-					f32 tmpNextVersion = (f32)atof(xeLauncherUpdate->Attribute("updateVersion"));
+					f32 tmpNextVersion = parseVersion(xeLauncherUpdate->Attribute("updateVersion"));
 					if (tmpNextVersion > launcherCurrentVersion && tmpNextVersion > launcherUpdateVersion)
 					{
 						tinyxml2::XMLElement* xeBaseVersionSupported = xeLauncherUpdate->FirstChildElement("baseVersionsSupported");
@@ -665,7 +662,7 @@ bool CUpdateScene::Work()
 							{
 
 								const char * sBaseVersion = xeBaseVersion->FirstChild()->ToText()->Value();
-								if (sBaseVersion[0] == '*' || launcherCurrentVersion == (f32)atof(sBaseVersion))
+								if (sBaseVersion[0] == '*' || launcherCurrentVersion == parseVersion(sBaseVersion))
 								{
 									tinyxml2::XMLElement * xeUpdateUrl = xeLauncherUpdate->FirstChildElement("url");
 									int urlCount = 0;
@@ -775,11 +772,12 @@ bool CUpdateScene::Work()
 								}
 								fileNameLength++;
 							}
-							const char * fileName = offset;
-							//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
-							char fullPath[fileNameLength + 27]; ///why use strlen? i can count!
-							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
-							CreateSubfolder("sd:/Project+/launcher/updates/");
+							const char * fileName = vURLs[urlSelection] + offset;
+							char updatesPath[ISFS_MAXPATH];
+							sprintf(updatesPath, "%s/launcher/updates", codesBasePath);
+							char fullPath[ISFS_MAXPATH]; 
+							sprintf(fullPath, "%s/%s", updatesPath, fileName);
+							CreateSubfolder(updatesPath);
 
 							FileHolder localUpdateFile(fullPath, "wb");
 							if (!localUpdateFile.IsOpen())
@@ -848,7 +846,7 @@ bool CUpdateScene::Work()
 
 		cur = doc.RootElement();
 
-		cur = cur->FirstChildElement("projectm");
+		cur = cur->FirstChildElement("game");
 		tinyxml2::XMLElement* projectmElement = cur;
 		if (projectmElement)
 		{
@@ -860,11 +858,13 @@ bool CUpdateScene::Work()
 				pmUpdateVersion = 0.0f;
 				int updateLength;
 				const char * updateMD5;
+				const char * updateVersionStr = nullptr; // Store original version string
 				std::vector<const char*> vURLs;
 				int count = 0;
 				do
 				{
-					f32 tmpNextVersion = (f32)atof(xePMUpdate->Attribute("updateVersion"));
+					const char* versionAttr = xePMUpdate->Attribute("updateVersion");
+					f32 tmpNextVersion = parseVersion(versionAttr);
 					if (tmpNextVersion > pmCurrentVersion && tmpNextVersion > pmUpdateVersion)
 					{
 						tinyxml2::XMLElement* xeBaseVersionSupported = xePMUpdate->FirstChildElement("baseVersionsSupported");
@@ -875,7 +875,8 @@ bool CUpdateScene::Work()
 							{
 
 								const char * sBaseVersion = xeBaseVersion->FirstChild()->ToText()->Value();
-								if (sBaseVersion[0] == '*' || pmCurrentVersion == (f32)atof(sBaseVersion))
+								f32 baseVersion = parseVersion(sBaseVersion);
+								if (sBaseVersion[0] == '*' || pmCurrentVersion == baseVersion)
 								{
 									tinyxml2::XMLElement * xeUpdateUrl = xePMUpdate->FirstChildElement("url");
 									int urlCount = 0;
@@ -898,6 +899,7 @@ bool CUpdateScene::Work()
 									if (urlCount != 0)
 									{
 										pmUpdateVersion = tmpNextVersion;
+										updateVersionStr = versionAttr; // Store original version string
 										updateLength = (int)atoi(xePMUpdate->Attribute("length"));
 										updateMD5 = xePMUpdate->Attribute("md5");
 									}
@@ -919,7 +921,7 @@ bool CUpdateScene::Work()
 				else // update found
 				{
 					swprintf(sInfoText, 255, L"Online update found!");
-					swprintf(confirmUpdateLine3Text, 50, L"Project+: v%4.2f -> v%4.2f", pmCurrentVersion, pmUpdateVersion);
+					swprintf(confirmUpdateLine3Text, 50, L"%hs: v%hs -> v%hs", projectName, pmCurrentVersionStr, updateVersionStr);
 					m_bInstallUpdate = false;
 					showConfirmUpdatePopup = true;
 					while (showConfirmUpdatePopup && !m_bCancelUpdate)
@@ -947,11 +949,12 @@ bool CUpdateScene::Work()
 							}
 							fileNameLength++;
 						}
-						const char * fileName = offset;
-						//char directoryPath = "/Project+/launcher/updates/"; // fix this bane :)
-						char tmpPath[255]; ///why use strlen? i can count! EDIT: NOPE!
-						sprintf(tmpPath, "sd:/Project+/launcher/updates/%s.tmp", fileName);
-						CreateSubfolder("sd:/Project+/launcher/updates/");
+						const char * fileName = vURLs[urlSelection] + offset;
+						char updatesPath[ISFS_MAXPATH];
+						snprintf(updatesPath, sizeof(updatesPath), "%s/launcher/updates", codesBasePath);
+						char tmpPath[ISFS_MAXPATH];
+						snprintf(tmpPath, sizeof(tmpPath), "%s/%s.tmp", updatesPath, fileName);
+						CreateSubfolder(updatesPath);
 						char *tmpPathPointer = tmpPath;
 
 						remove(tmpPath);
@@ -1010,8 +1013,8 @@ bool CUpdateScene::Work()
 							swprintf(sInfoText, 255, L"Storing update...");
 							fProgressPercentage = 0.0f;
 
-							char fullPath[255]; ///why use strlen? i can count! EDIT: NOPE! I CAN'T!
-							sprintf(fullPath, "sd:/Project+/launcher/updates/%s", fileName);
+							char fullPath[ISFS_MAXPATH]; ///why use strlen? i can count! EDIT: NOPE! I CAN'T!
+							snprintf(fullPath, sizeof(fullPath), "%s/launcher/updates/%s", codesBasePath, fileName);
 							remove(fullPath);
 							fProgressPercentage = 0.5f;
 							rename(tmpPath, fullPath);
@@ -1041,7 +1044,7 @@ bool CUpdateScene::Work()
 							if (m_bCancelUpdate)
 								break;
 
-							swprintf(sInfoText, 50, L"Project+: v%4.2f installed", pmUpdateVersion);
+							swprintf(sInfoText, 50, L"%s: v%4.2f installed", projectName, pmUpdateVersion);
 							loadInfoFile();
 							pmCurrentVersion = pmUpdateVersion;
 
@@ -1150,7 +1153,7 @@ void CUpdateScene::drawProgressBar()
 	height = initialSizeRatio * finalHeight + ((1.0f - initialSizeRatio) * finalHeight * animationRatio);
 
 	Menu_DrawRectangle(xPos, yPos, width, height, (GXColor){ 0, 0, 0, u8(178 * animationRatio) }, true);
-	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ 163, 255, 215, u8(255 * animationRatio) }, true);
+	Menu_DrawRectangle(xPos, yPos, width * fProgressPercentage, height, (GXColor){ selectionColor.r, selectionColor.g, selectionColor.b, u8(255 * animationRatio) }, true);
 
 	//drawBox(0, 0, screenWidth, screenHeight, 0, 0, 0, 178);
 }

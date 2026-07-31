@@ -1,8 +1,9 @@
 #ifndef _PATCHER_H_
 #define _PATCHER_H_
 
-#include "ISOInterface.h"
-#include "DVDISO.h"
+// Disc/ISO loading moved to loader.dol
+//#include "ISOInterface.h"
+//#include "DVDISO.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,19 +14,18 @@
 #include <memory>
 #include <assert.h>
 #include <malloc.h>
-#include <di/di.h>
+//#include <di/di.h>  // Disc loading moved to loader.dol
 #include "ApplyPatch.h"
-#include "Patcher.h"
-#include "DVDISO.h"
-#include "7z\7ZipFile.h"
+//#include "DVDISO.h"  // Disc loading moved to loader.dol
+#include "7z/7ZipFile.h"
 #include "FrozenMemories.h"
-#include "7z\CreateSubfolder.h"
+#include "7z/CreateSubfolder.h"
 #include "tinyxml2.h"
 #include "../FileHolder.h"
 #include "../Common.h"
 #include "md5.h"
-#include "../Launcher/wdvd.h"
-#include "../Launcher/disc.h"
+//#include "../Launcher/wdvd.h"  // Disc loading moved to loader.dol
+//#include "../Launcher/disc.h"  // Disc loading moved to loader.dol
 
 
 

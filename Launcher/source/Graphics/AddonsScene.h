@@ -16,7 +16,7 @@
 #include "GraphicsScene.h"
 #include "video.h"
 #include "Popup.h"
-#include "..\Patching\AddonFile.h"
+#include "../Patching/AddonFile.h"
 
 
 
@@ -38,11 +38,16 @@ private:
 	CAddonsScene() {}
 	
 	void drawSelectionMenu(float yPos);
+	void UpdateScrollbarState(f32 menuY, f32 menuHeight);
+	void drawScrollbar(f32 menuX, f32 menuY, f32 menuWidth, f32 menuHeight, f32 animationRatio);
 
-	
 	bool enumeratedFiles;
 	int installIndex;
 	std::vector<AddonFile *> addonFiles;
+
+	bool m_bShowScrollbar;
+	f32 m_fScrollbarHeight;
+	f32 m_fScrollbarY;
 	
 };
 

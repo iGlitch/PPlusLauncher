@@ -1,0 +1,11 @@
+#define logo 0
+#define backgroundtile 1
+#define stylishm 2
+#define en_menu_play 3
+#define en_menu_update 4
+#define en_menu_addons 5
+#define en_menu_settings 6
+#define en_menu_exit 7
+#define addon_installed 8
+#define addon_conflict 9
+#define addon_not_installed 10

@@ -6,10 +6,10 @@
 #include "ToolsScene.h"
 #include "stdlib.h"
 #include "FreeTypeGX.h"
-#include "..\Audio\sfx.h"
-#include "..\Patching\tinyxml2.h"
+#include "../Audio/sfx.h"
+#include "../Patching/tinyxml2.h"
 #include "textures.h"
-
+#include "../Common.h"
 
 
 CToolsScene::CToolsScene(f32 w, f32 h)
@@ -20,7 +20,7 @@ CToolsScene::CToolsScene(f32 w, f32 h)
 	m_fScreenHeight = h;
 	m_bIsLoaded = false;
 	m_iMenuSelectionAnimationFrames = 15;
-	m_fMaxNewsScrollFrames = f32(60 * 30);
+	m_fMaxNewsScrollFrames = f32(60 * 25);
 	m_fCurrentNewsScrollFrame = f32(-1);
 
 };
@@ -34,27 +34,7 @@ void CToolsScene::Load()
 	m_sPrevDStickY = s8(0);
 	m_eNextScreen = SCENE_TOOLS;
 
-	char projectMVersion[20] = "Unknown";
-
-
-	tinyxml2::XMLDocument infoDoc;
-	if (infoFileSize != 0 && infoDoc.Parse((char *)infoFileData, infoFileSize) == (int)tinyxml2::XML_NO_ERROR)
-	{
-		tinyxml2::XMLElement* cur = infoDoc.RootElement();
-		if (cur)
-		{
-			cur = cur->FirstChildElement("game");
-			if (cur)
-			{
-				cur = cur->FirstChildElement("version");
-				if (cur && cur->FirstChild() && cur->FirstChild()->ToText())
-				{
-					const char* text = cur->FirstChild()->ToText()->Value();
-					sprintf(projectMVersion, text);
-				}
-			}
-		}
-	}
+	const char* projectMVersion = gameVersionStr[0] ? gameVersionStr : "Unknown";
 
 	
 	showAboutPopup = false;
@@ -64,15 +44,15 @@ void CToolsScene::Load()
 
 
 	char line2[50];
-	sprintf(line2, "Project+ Version: %s", projectMVersion);
+	sprintf(line2, "%s Version: %s", projectName, projectMVersion);
 	aboutLine2Text = charToWideChar(line2);
 
 	
 
 	//aboutLine2Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
 	//aboutLine3Text = (wchar_t*)malloc(sizeof(wchar_t)* 50);
-	//sprintf(aboutLine2Text, "Project+ Version: %s", projectMVersion);
-	//sprintf(aboutLine3Text, "Project+ Codeset: %s", projectMCodeset);
+	//sprintf(aboutLine2Text, "%s Version: %s", projectName, projectMVersion);
+	//sprintf(aboutLine3Text, "%s Codeset: %s", projectName, projectCodeset);
 
 	aboutPopup->setLineTextItems(2, L"Launcher Version: 1.0", aboutLine2Text);
 
@@ -94,7 +74,7 @@ void CToolsScene::Unload()
 
 void CToolsScene::HandleInputs(u32 gcPressed, s8 dStickX, s8 dStickY, s8 cStickX, s8 cStickY, u32 wiiPressed)
 {
-	if (m_iDrawFrameNumber < 60 || m_iMenuSelectedIndex == -1)
+	if (m_iDrawFrameNumber < 30 || m_iMenuSelectedIndex == -1)
 		return;
 
 	if (showAboutPopup)
@@ -191,19 +171,19 @@ void CToolsScene::Draw()
 	yPos += 20.0f;
 
 	//MenuItem0
-	drawMenuItem(0, yPos, 300, 196, 33, 21, 15, &menuRepairFilesTexture, (m_iMenuSelectedIndex == 0));
+	//drawMenuItem(0, yPos, 300, 196, 33, 21, 15, &menuRepairFilesTexture, (m_iMenuSelectedIndex == 0));
 	yPos += 70.0f;
 
 	//MenuItem1
-	drawMenuItem(0, yPos, 275, 258, 33, 29, 15, &menuInstallChannelTexture, (m_iMenuSelectedIndex == 1));
+	//drawMenuItem(0, yPos, 275, 258, 33, 29, 15, &menuInstallChannelTexture, (m_iMenuSelectedIndex == 1));
 	yPos += 70.0f;
 
 	//MenuItem2
-	drawMenuItem(0, yPos, 250, 100, 33, 37, 15, &menuAboutTexture, (m_iMenuSelectedIndex == 2));
+	//drawMenuItem(0, yPos, 250, 100, 33, 37, 15, &menuAboutTexture, (m_iMenuSelectedIndex == 2));
 	yPos += 70.0f;
 
 	//MenuItem3
-	drawMenuItem(0, yPos, 225, 82, 33, 45, 15, &menuBackTexture, (m_iMenuSelectedIndex == 3));
+	//drawMenuItem(0, yPos, 225, 82, 33, 45, 15, &menuBackTexture, (m_iMenuSelectedIndex == 3));
 	yPos += 78.0f;
 
 	if (m_iDrawFrameNumber < 15)
@@ -215,11 +195,19 @@ void CToolsScene::Draw()
 	switch (m_iMenuSelectedIndex)
 	{
 	case 0:
-		drawInfoBox(yPos + offset, 36.0F, L"Install Project+. A copy of Super Smash Bros. Brawl is required.");
+	{
+		wchar_t installInfo[128];
+		swprintf(installInfo, 128, L"Install %hs. A copy of Super Smash Bros. Brawl is required.", projectName);
+		drawInfoBox(yPos + offset, 36.0F, installInfo);
 		break;
+	}
 	case 1:
-		drawInfoBox(yPos + offset, 36.0F, L"Check for updates and use other various Project+ related tools.");
+	{
+		wchar_t updateInfo[128];
+		swprintf(updateInfo, 128, L"Check for updates and use other various %hs related tools.", projectName);
+		drawInfoBox(yPos + offset, 36.0F, updateInfo);
 		break;
+	}
 	case 2:
 		drawInfoBox(yPos + offset, 36.0F, L"View version information, credits, and additional info.");
 		break;
@@ -234,7 +222,7 @@ void CToolsScene::Draw()
 		aboutPopup->draw();
 
 	
-	if (m_iDrawFrameNumber <= 60)
+	if (m_iDrawFrameNumber <= 30)
 		m_iDrawFrameNumber++;
 
 }

@@ -10,7 +10,7 @@
 #include <sys/iosupport.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
-#include "tools.h"
+//#include "tools.h"  // Dead code moved to unused/ folder
 
 #include <unistd.h>
 #include <asndlib.h>
@@ -27,9 +27,10 @@
 #include "Graphics/video.h"
 #include "Graphics/GraphicsScene.h"
 #include "Graphics/MainMenuScene.h"
-#include "Graphics/ToolsScene.h"
+//#include "Graphics/ToolsScene.h"  // Dead code moved to unused/ folder
 #include "Graphics/AddonsScene.h"
-#include "Graphics/TestScene.h"
+#include "Graphics/SettingsScene.h"
+//#include "Graphics/TestScene.h"  // Dead code moved to unused/ folder
 
 #include "Graphics/UpdateScene.h"
 #include "Graphics/FreeTypeGX.h"
@@ -39,11 +40,9 @@
 #include "Network/networkloader.h"
 #include "Patching/tinyxml2.h"
 
-#include "tex_default_tpl.h"
-#include "tex_default.h"
 #include "vera_bold_ttf.h"
 #include "fatmounter.h"
-#include "dolloader.h"
+//#include "dolloader.h"  // Dead code moved to unused/ folder
 #include "app_booter_bin.h"
 #include <limits.h>
 
@@ -77,7 +76,10 @@ extern "C" void build_argv(struct __argv *);
 struct __argv args;
 char *a_argv[MAX_ARGV];
 char *meta_buf = NULL;
-char configBasePath[ISFS_MAXPATH] = "sd:/Project+";
+char customDolPath[ISFS_MAXPATH] = "";
+char codesBasePath[ISFS_MAXPATH] = "";
+char projectName[64] = "Brawl Mod";
+char updateUrl[512] = "";
 
 void arg_init()
 {
@@ -219,26 +221,26 @@ void parse_meta()
 	}
 }
 
-void get_configpath(int argc, char **argv)
+void parse_arguments(int argc, char **argv)
 {
-    const char *prefix_eq  = "--configpath=";
-
     for (int i = 0; i < argc; i++)
     {
-        if (!argv[i]) continue;
-
-        if (strncasecmp(argv[i], prefix_eq, strlen(prefix_eq)) == 0)
+        if (strncasecmp(argv[i], "codespath=", 10) == 0)
         {
-            const char *val = argv[i] + strlen(prefix_eq);
-            if (val && *val)
-            {
-                strncpy(configBasePath, val, sizeof(configBasePath) - 1);
-                configBasePath[sizeof(configBasePath) - 1] = '\0';
-                return;
+            const char *val = argv[i] + 10;
+            strncpy(codesBasePath, val, sizeof(codesBasePath) - 1);
+            codesBasePath[sizeof(codesBasePath) - 1] = '\0';
+            
+            // Remove trailing slash
+                size_t len = strlen(codesBasePath);
+            if (len > 1 && codesBasePath[len-1] == '/') {
+                codesBasePath[len-1] = '\0';
             }
         }
     }
 }
+
+LoadMethod loadMethod = LOAD_AUTO;
 
 static void DeInitDevices() {
     WPAD_Flush(0);
@@ -252,20 +254,26 @@ typedef void (*entrypoint)(void);
 
 static const char* PickGameID() {
     struct stat st;
-    if (stat("sd:/Project+/RSBP01.gct", &st) == 0) return "RSBP01";
-    if (stat("sd:/Project+/RSBJ01.gct", &st) == 0) return "RSBJ01";
-    if (stat("sd:/Project+/RSBK01.gct", &st) == 0) return "RSBK01";
+    char path[ISFS_MAXPATH];
+    
+    snprintf(path, sizeof(path), "%s/RSBP01.gct", codesBasePath);
+    if (stat(path, &st) == 0) return "RSBP01";
+    
+    snprintf(path, sizeof(path), "%s/RSBJ01.gct", codesBasePath);
+    if (stat(path, &st) == 0) return "RSBJ01";
+    
+    snprintf(path, sizeof(path), "%s/RSBK01.gct", codesBasePath);
+    if (stat(path, &st) == 0) return "RSBK01";
+    
     return "RSBE01";
 }
 
 static GraphicsScene * g_pCurrentScene = nullptr;
-static GXTexObj texBackgroundTile;
-static GXTexObj texStylishMTexture;
-TPLFile defaultTPL;
 extern s32 wu_fd;
 void BackToLoader(void);
 static s32 iosVersion = 58;
-f32 g_LauncherVersion = 1.15f;
+f32 g_LauncherVersion = 2.0f;
+extern bool useDefaultTextures;
 
 namespace UIThread
 {
@@ -291,18 +299,22 @@ namespace UIThread
 
     void DrawDefaultBackground()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                drawTexturedBox(&texBackgroundTile, 176 * i, 176 * j, 176, 176, 255, 255, 255, 255);
-            }
-        }
-
-        //stylishM
         f32 fScreenWidth = getScreenWidth();
         f32 fScreenHeight = getScreenHeight();
-        drawTexturedBox(&texStylishMTexture, fScreenWidth - 316, fScreenHeight - 341, 316, 341, 255, 255, 255, 165);
+
+        if (useDefaultTextures && isTexturesLoaded())
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    drawTexturedBox(&backgroundTileTexture, 176 * i, 176 * j, 176, 176, 255, 255, 255, 255);
+                }
+            }
+
+            //stylishM
+            drawTexturedBox(&stylishmTexture, fScreenWidth - 316, fScreenHeight - 341, 316, 341, 255, 255, 255, 165);
+        }
 
         //spotlight
         drawCircle(fScreenWidth / 2.0f, fScreenHeight / 2.0f, fScreenWidth / 2.0f, 255, 255, 255, 32, 255, 255, 255, 0);
@@ -367,6 +379,7 @@ namespace UIThread
 
 bool sdhcSupport = true;
 bool usb2Support = true;
+bool autoBoot = false;
 bool useGCPads = true;
 bool useWiiPads = true;
 bool useVideo = true;
@@ -377,9 +390,21 @@ bool useMusic = true;
 bool useFonts = true;
 bool useDefaultTextures = true;
 bool useMenus = true;
-bool autoBoot = false;
-char customDolPath[ISFS_MAXPATH] = {0};
-char customCodesPath[ISFS_MAXPATH] = {0};
+bool debugToFile = false;
+
+void setConfigLoadMethodValue(tinyxml2::XMLElement * xe, LoadMethod & setting)
+{
+    if (xe && xe->FirstChild() && xe->FirstChild()->ToText())
+    {
+        const char* value = xe->FirstChild()->ToText()->Value();
+        if (strcasecmp(value, "auto") == 0)
+            setting = LOAD_AUTO;
+        else if (strcasecmp(value, "disc") == 0)
+            setting = LOAD_DISC;
+        else if (strcasecmp(value, "usb") == 0)
+            setting = LOAD_USB;
+    }
+}
 
 void setConfigBoolValue(tinyxml2::XMLElement * xe, bool & setting)
 {
@@ -402,13 +427,7 @@ void setConfigBoolValue(tinyxml2::XMLElement * xe, bool & setting)
 void loadConfigFile()
 {
     char cfgpath[ISFS_MAXPATH];
-    memset(cfgpath, 0, sizeof(cfgpath));
-
-    size_t len = strlen(configBasePath);
-    if (len && configBasePath[len - 1] == '/')
-        snprintf(cfgpath, sizeof(cfgpath), "%slauncher/config.xml", configBasePath);
-    else
-        snprintf(cfgpath, sizeof(cfgpath), "%s/launcher/config.xml", configBasePath);
+    snprintf(cfgpath, sizeof(cfgpath), "%s/launcher/config.xml", codesBasePath);
 
     FileHolder configFile(cfgpath, "r");
     if (configFile.IsOpen())
@@ -433,98 +452,57 @@ void loadConfig()
 
     if (configFileSize != 0 && doc.Parse((char *)configFileData, configFileSize) == (int)tinyxml2::XML_NO_ERROR)
     {
-        tinyxml2::XMLElement* cur = doc.RootElement();
-        if (!cur)
-            return;
+    tinyxml2::XMLElement* cur = doc.RootElement();
+    if (!cur)
+        return;
 
         tinyxml2::XMLElement* xeProjectM = cur;
-
+/*
         cur = xeProjectM->FirstChildElement("game");
         if (cur)
         {
-            cur = cur->FirstChildElement("config");
+    cur = cur->FirstChildElement("config");
             if (cur)
             {
 
             }
         }
-
+*/
         cur = xeProjectM->FirstChildElement("launcher");
         if (cur)
         {
             cur = cur->FirstChildElement("config");
             if (cur)
             {
-                tinyxml2::XMLElement* xeLauncherConfig = cur;
-                cur = xeLauncherConfig->FirstChildElement("global");
-                if (cur)
-                {
-                    setConfigBoolValue(cur->FirstChildElement("useGCPads"), useGCPads);
-                    setConfigBoolValue(cur->FirstChildElement("useWiiPads"), useWiiPads);
-                    setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
-                    setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
-                    setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
-                    setConfigBoolValue(cur->FirstChildElement("autoBoot"), autoBoot);
-                }
+    tinyxml2::XMLElement* xeLauncherConfig = cur;
+    cur = xeLauncherConfig->FirstChildElement("global");
+    if (cur)
+    {
+        setConfigLoadMethodValue(cur->FirstChildElement("loadMethod"), loadMethod);
+        setConfigBoolValue(cur->FirstChildElement("autoBoot"), autoBoot);
+        setConfigBoolValue(cur->FirstChildElement("useGCPads"), useGCPads);
+        setConfigBoolValue(cur->FirstChildElement("useWiiPads"), useWiiPads);
+        setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
+        setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
+        setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
+        setConfigBoolValue(cur->FirstChildElement("debugToFile"), debugToFile);
+    }
 
-                if (IsDolphin())
-                    cur = xeLauncherConfig->FirstChildElement("dolphin");
-                else
-                    cur = xeLauncherConfig->FirstChildElement("wii");
+    if (IsDolphin())
+        cur = xeLauncherConfig->FirstChildElement("dolphin");
+    else
+        cur = xeLauncherConfig->FirstChildElement("wii");
 
-                if (cur)
-                {
-                    setConfigBoolValue(cur->FirstChildElement("useGCPads"), useGCPads);
-                    setConfigBoolValue(cur->FirstChildElement("useWiiPads"), useWiiPads);
-                    setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
-                    setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
-                    setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
-                    setConfigBoolValue(cur->FirstChildElement("autoBoot"), autoBoot);
-					tinyxml2::XMLElement* xeDolPath = xeLauncherConfig->FirstChildElement("global");
-					if (xeDolPath)
-					{
-						tinyxml2::XMLElement* xeDP = xeDolPath->FirstChildElement("dolpath");
-						if (xeDP && xeDP->FirstChild() && xeDP->FirstChild()->ToText())
-						{
-							const char* v = xeDP->FirstChild()->ToText()->Value();
-							if (v && v[0] != '\0')
-							{
-								// copy and trim whitespace
-								strncpy(customDolPath, v, sizeof(customDolPath) - 1);
-								customDolPath[sizeof(customDolPath)-1] = '\0';
-					
-								// trim leading whitespace
-								char *s = customDolPath;
-								while (*s && isspace((unsigned char)*s)) s++;
-								if (s != customDolPath) memmove(customDolPath, s, strlen(s) + 1);
-					
-								// trim trailing whitespace
-								char *t = customDolPath + strlen(customDolPath);
-								while (t > customDolPath && isspace((unsigned char)*(t-1))) *--t = '\0';
-							}
-						}
-					}
-					tinyxml2::XMLElement* xeCodesPath = xeLauncherConfig->FirstChildElement("global");
-					if (xeCodesPath)
-					{
-						tinyxml2::XMLElement* xeCP = xeCodesPath->FirstChildElement("codespath");
-						if (xeCP && xeCP->FirstChild() && xeCP->FirstChild()->ToText())
-						{
-							const char* v = xeCP->FirstChild()->ToText()->Value();
-							if (v && v[0] != '\0')
-							{
-								strncpy(customCodesPath, v, sizeof(customCodesPath) - 1);
-								customCodesPath[sizeof(customCodesPath)-1] = '\0';
-					
-								char *s = customCodesPath;
-								while (*s && isspace((unsigned char)*s)) s++;
-								if (s != customCodesPath) memmove(customCodesPath, s, strlen(s) + 1);
-					
-								char *t = customCodesPath + strlen(customCodesPath);
-								while (t > customCodesPath && isspace((unsigned char)*(t-1))) *--t = '\0';
-							}
-						}
-					}
+    if (cur)
+    {
+        setConfigLoadMethodValue(cur->FirstChildElement("loadMethod"), loadMethod);
+        setConfigBoolValue(cur->FirstChildElement("autoBoot"), autoBoot);
+        setConfigBoolValue(cur->FirstChildElement("useGCPads"), useGCPads);
+        setConfigBoolValue(cur->FirstChildElement("useWiiPads"), useWiiPads);
+        setConfigBoolValue(cur->FirstChildElement("useNetwork"), useNetwork);
+        setConfigBoolValue(cur->FirstChildElement("useSoundEffects"), useSFX);
+        setConfigBoolValue(cur->FirstChildElement("useMusic"), useMusic);
+        setConfigBoolValue(cur->FirstChildElement("debugToFile"), debugToFile);
                 }
             }
         }
@@ -544,30 +522,19 @@ static inline bool IsDollZ(const u8 *buf) {
     return (buf[0x100] == 0x3C);
 }
 
-int BootHomebrew() {
+int BootHomebrew(char **argv) {
     u32 cpu_isr;
 
-    const char* paths[] = {
-		customDolPath[0] ? customDolPath : NULL,
-        "sd:/apps/Project+/usb.dol",
-        "usb:/apps/Project+/usb.dol",
-        NULL
-    };
-
-    char full_path[ISFS_MAXPATH] ATTRIBUTE_ALIGN(32);
-    memset(full_path, 0, sizeof(full_path));
-    FILE* f = NULL;
-    const char* chosen_path = NULL;
-    for (int i = 0; paths[i] != NULL; i++) {
-        f = fopen(paths[i], "rb");
-        if (f) {
-            chosen_path = paths[i];
-            break;
-        }
+    // set path to loader.dol from boot.dol executable path
+    const char* lastSlash = strrchr(argv[0], '/');
+    if (lastSlash) {
+        snprintf(customDolPath, ISFS_MAXPATH, "%.*sloader.dol", (int)(lastSlash - argv[0] + 1), argv[0]);
     }
 
+    FILE* f = fopen(customDolPath, "rb");
     if (!f) {
         // Nothing found, go back to SysMenu
+        if (useDefaultTextures) { unloadTextures(); }
         SDCard_deInit();
         USBDevice_deInit();
         SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
@@ -580,6 +547,7 @@ int BootHomebrew() {
 
     if (homebrewsize == 0) {
         fclose(f);
+        if (useDefaultTextures) { unloadTextures(); }
         SDCard_deInit();
         USBDevice_deInit();
         SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
@@ -590,31 +558,42 @@ int BootHomebrew() {
     fclose(f);
 
     if (read != homebrewsize) {
+        if (useDefaultTextures) { unloadTextures(); }
         SDCard_deInit();
         USBDevice_deInit();
         SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
         return -1;
     }
 
-    snprintf(full_path, sizeof(full_path), "%s", chosen_path);
-
     if (!IsDollZ(EXECUTE_ADDR)) {
-        arg_init();
-        // argv[0] = full_path
-        arg_add(full_path);
-        // load meta.xml and parse <arguments>
-        load_meta(full_path);
-        parse_meta();
-		if (customCodesPath[0] != '\0') {
-			char codesArg[ISFS_MAXPATH + 16] ATTRIBUTE_ALIGN(32);
-			snprintf(codesArg, sizeof(codesArg), "--codespath=%s", customCodesPath);
-			codesArg[sizeof(codesArg)-1] = '\0';
-			arg_addl(codesArg, strlen(codesArg));
-		}
-		const char *gid = PickGameID();
-		if (gid && strlen(gid) > 0) {
-			arg_addl((char*)gid, strlen(gid));
-		}
+        switch (loadMethod) {
+            case LOAD_AUTO:
+                if (IsUSBMounted()) {
+                    const char *gid = PickGameID();
+                    if (gid && *gid) {
+                        arg_addl(gid, strlen(gid));
+                    }
+                } else {
+                    arg_add("-sdmode=1");
+                }
+                break;
+            case LOAD_DISC:
+                arg_add("-sdmode=1");
+                break;
+            case LOAD_USB:
+                const char *gid = PickGameID();
+                if (gid && *gid) {
+                    arg_addl(gid, strlen(gid));
+                }
+                break;
+        }
+
+        char codesPath[ISFS_MAXPATH];
+        snprintf(codesPath, sizeof(codesPath), "-codespath=%s", codesBasePath);
+        arg_add(codesPath);
+
+        if (debugToFile)
+            arg_add("-debug=1");
     }
 
     DCFlushRange(EXECUTE_ADDR, homebrewsize);
@@ -639,6 +618,10 @@ int BootHomebrew() {
     WPAD_Disconnect(0);
     WPAD_Shutdown();
 
+    // Required: libogc USB storage leaks internal IOS file descriptors (libogc issue #109)
+    // that cannot be closed via __io_usbstorage.shutdown(). 
+    // Without this reload, loader.dol fails to mount USB due to stale handles.
+    IOS_ReloadIOS(IOS_GetVersion());
     SYS_ResetSystem(SYS_SHUTDOWN, 0, 0);
     _CPU_ISR_Disable(cpu_isr);
     if (__exception_closeall) __exception_closeall();
@@ -657,7 +640,12 @@ int main(int argc, char **argv)
     //devHandler.MountSD();
     //devHandler.MountSD();
     //fatInit(0, true);
-	get_configpath(argc, argv);
+    arg_init();
+    arg_add(argv[0]);
+    load_meta(argv[0]);
+    parse_meta();
+    parse_arguments(argc, argv);
+    build_argv(&args);
     fatInitDefault();
     //mountSDCard();
     loadConfigFile();
@@ -681,7 +669,7 @@ if (autoBoot)
         goto Menu;
     } else {
         WPAD_Shutdown();
-        BootHomebrew();
+        BootHomebrew(argv);
         //BackToLoader();
         return 0;
     }
@@ -727,31 +715,26 @@ Menu:
 
     if (useVideo && useDefaultTextures)
     {
-        loadTextures();
-        TPL_OpenTPLFromMemory(&defaultTPL, (void *)tex_default_tpl, tex_default_tpl_size);
-        TPL_GetTexture(&defaultTPL, backgroundtile, &texBackgroundTile);
-        TPL_GetTexture(&defaultTPL, stylishm, &texStylishMTexture);
+        setTexturesBasePath(argv[0]);
+        if (loadTextures() != 0)
+            useDefaultTextures = false;  // Disable textures if load failed
     }
 
 	BrstmPlayer* pMusicPlayer = NULL;
 	if (useMusic)
 	{
-		// Build the path to launcher.brstm using configBasePath
+		// Build the path to launcher.brstm using codespath
 		char brstmPath[ISFS_MAXPATH];
-		memset(brstmPath, 0, sizeof(brstmPath));
-	
-		size_t len = strlen(configBasePath);
-		if (len && configBasePath[len - 1] == '/')
-			snprintf(brstmPath, sizeof(brstmPath), "%spf/sound/strm/project m/launcher.brstm", configBasePath);
+		if (infoMusicPath[0])
+			snprintf(brstmPath, sizeof(brstmPath), "%s/pf/sound/strm/%s", codesBasePath, infoMusicPath);
 		else
-			snprintf(brstmPath, sizeof(brstmPath), "%s/pf/sound/strm/project m/launcher.brstm", configBasePath);
+			snprintf(brstmPath, sizeof(brstmPath), "%s/pf/sound/strm/project m/launcher.brstm", codesBasePath);
 	
 		FileHolder brstmFile(brstmPath, "rb");
 		if (brstmFile.IsOpen())
 		{
 			int len = brstmFile.Size();
 			u8 *brstmData = (u8*)malloc(len);
-			memset(brstmData, 0, len);
 	
 			brstmFile.FRead(brstmData, len, 1);
 			brstmFile.FClose();
@@ -782,7 +765,7 @@ Menu:
 
         LWP_CreateThread(&UIThread::guithread, UIThread::UpdateGUI, NULL, NULL, 0, 64);
 
-        //UIThread::ResumeGUI();
+        UIThread::ResumeGUI();
 
         while (true)
         {
@@ -802,15 +785,18 @@ Menu:
                 case SCENE_MAIN_MENU:
                     g_pCurrentScene = new CMainMenuScene(fScreenWidth, fScreenHeight);
                     break;
-                case SCENE_TOOLS:
-                    g_pCurrentScene = new CToolsScene(fScreenWidth, fScreenHeight);;
-                    break;
+                //case SCENE_TOOLS:
+                //    g_pCurrentScene = new CToolsScene(fScreenWidth, fScreenHeight);;
+                //    break;
                 case SCENE_ADDONS:
                     g_pCurrentScene = new CAddonsScene(fScreenWidth, fScreenHeight);;
                     break;
-                case SCENE_TEST:
-                    g_pCurrentScene = new CTestScene(fScreenWidth, fScreenHeight);;
+                case SCENE_SETTINGS:
+                    g_pCurrentScene = new CSettingsScene(fScreenWidth, fScreenHeight);;
                     break;
+                //case SCENE_TEST:
+                //    g_pCurrentScene = new CTestScene(fScreenWidth, fScreenHeight);;
+                //    break;
                 case SCENE_UPDATE:
                     g_pCurrentScene = new CUpdateScene(fScreenWidth, fScreenHeight);;
                     break;
@@ -869,6 +855,7 @@ Menu:
     if (useVideo)
     {
         if (useFonts) { DeinitFreeType(); }
+        if (useDefaultTextures) { unloadTextures(); }
         StopGX();
     }
 
@@ -876,7 +863,7 @@ Menu:
 
     if (eNextScene == SCENE_LAUNCHTITLE)
     {
-        BootHomebrew();
+        BootHomebrew(argv);
         //BackToLoader();  // if no disc, return to menu
     }
 }

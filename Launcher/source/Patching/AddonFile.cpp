@@ -14,13 +14,15 @@
 
 #include "AddonFile.h"
 #include "tinyxml2.h"
-#include "..\Graphics\FreeTypeGX.h"
+#include "../Graphics/FreeTypeGX.h"
 #include "Patcher.h"
-#include "..\Common.h"
+#include "../Common.h"
 
 using namespace tinyxml2;
 
-
+static inline void getStatusPath(char *out, size_t size) {
+	snprintf(out, size, "%s/launcher/addons/status.xml", codesBasePath);
+}
 
 AddonFile::AddonFile(const char* filePath)
 {
@@ -248,9 +250,11 @@ int AddonFile::Install(){
 			{
 
 
-				CreateSubfolder("sd:/Project+/launcher/addons/backups");
-				char backupLocation[256];
-				sprintf(backupLocation, "sd:/Project+/launcher/addons/backups/%s", GetFileName(destinationFile));
+				char backupDir[ISFS_MAXPATH];
+				sprintf(backupDir, "%s/launcher/addons/backups", codesBasePath);
+				CreateSubfolder(backupDir);
+				char backupLocation[ISFS_MAXPATH];
+				sprintf(backupLocation, "%s/launcher/addons/backups/%s", codesBasePath, GetFileName(destinationFile));
 				FILE * fpBackUpFileCheck = fopen(backupLocation, "rb");
 				if (fpBackUpFileCheck == NULL)
 				{
@@ -437,9 +441,11 @@ int AddonFile::Uninstall(){
 			continue;
 
 
-		CreateSubfolder("sd:/Project+/launcher/addons/backups");
-		char backupLocation[256];
-		sprintf(backupLocation, "sd:/Project+/launcher/addons/backups/%s", GetFileName(destinationFile));
+		char backupDir[ISFS_MAXPATH];
+		sprintf(backupDir, "%s/launcher/addons/backups", codesBasePath);
+		CreateSubfolder(backupDir);
+		char backupLocation[ISFS_MAXPATH];
+		sprintf(backupLocation, "%s/launcher/addons/backups/%s", codesBasePath, GetFileName(destinationFile));
 
 		FILE * fpBackUpFile = fopen(backupLocation, "rb");
 		if (fpBackUpFile != NULL)
@@ -504,7 +510,9 @@ bool AddonFile::logRestoredFile(const char * fileName){
 	tinyxml2::XMLElement* xeFiles;
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
+	char statusPath[ISFS_MAXPATH];
+	getStatusPath(statusPath, sizeof(statusPath));
+	if (statusDoc.LoadFile(statusPath) == (int)tinyxml2::XML_NO_ERROR)
 	{
 		xeRoot = statusDoc.RootElement();
 		if (xeRoot == NULL)
@@ -541,7 +549,7 @@ bool AddonFile::logRestoredFile(const char * fileName){
 	if (!foundFileName)
 		return true;
 
-	FILE * statusXML = fopen("sd:/Project+/launcher/addons/status.xml", "wb");
+	FILE * statusXML = fopen(statusPath, "wb");
 	int ret = 1;
 	if (statusXML != NULL)
 	{
@@ -562,7 +570,9 @@ bool AddonFile::logChangedFile(const char * fileName){
 	tinyxml2::XMLElement* xeFiles;
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") == (int)tinyxml2::XML_NO_ERROR)
+	char statusPath[ISFS_MAXPATH];
+	getStatusPath(statusPath, sizeof(statusPath));
+	if (statusDoc.LoadFile(statusPath) == (int)tinyxml2::XML_NO_ERROR)
 	{
 		xeRoot = statusDoc.RootElement();
 		if (xeRoot == NULL)
@@ -608,7 +618,7 @@ bool AddonFile::logChangedFile(const char * fileName){
 		xeFile->SetAttribute("code", code);
 		xeFiles->InsertEndChild(xeFile);
 	}
-	FILE * statusXML = fopen("sd:/Project+/launcher/addons/status.xml", "wb");
+	FILE * statusXML = fopen(statusPath, "wb");
 	int ret = 1;
 	if (statusXML != NULL)
 	{
@@ -625,7 +635,9 @@ int AddonFile::CheckState()
 
 
 	tinyxml2::XMLDocument statusDoc;
-	if (statusDoc.LoadFile("sd:/Project+/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
+	char statusPath[ISFS_MAXPATH];
+	getStatusPath(statusPath, sizeof(statusPath));
+	if (statusDoc.LoadFile(statusPath) != (int)tinyxml2::XML_NO_ERROR)
 	{
 		state = ADDON_FILE_STATE_NOT_INSTALLED;
 		return -2;
@@ -694,8 +706,9 @@ int AddonFile::checkIfChanged(const char * fileName)
 {
 
 	tinyxml2::XMLDocument doc;
-
-	if (doc.LoadFile("sd:/Project+/launcher/addons/status.xml") != (int)tinyxml2::XML_NO_ERROR)
+	char statusPath[ISFS_MAXPATH];
+	getStatusPath(statusPath, sizeof(statusPath));
+	if (doc.LoadFile(statusPath) != (int)tinyxml2::XML_NO_ERROR)
 		return -2;
 
 

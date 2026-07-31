@@ -1,16 +1,22 @@
 #include "Common.h"
 #include <stdio.h>
 #include <string.h>
-#include <gccore.h>
 #include <ctype.h>
 #include "FileHolder.h"
 #include <malloc.h>
+#include "Patching/tinyxml2.h"
+
+char infoMusicPath[ISFS_MAXPATH] = "";
+char infoVersionStr[32] = "";
+f32 infoVersion = 0.0f;
+char gameVersionStr[32] = "";
+f32 gameVersion = 0.0f;
+GXColor selectionColor = (GXColor){ 255, 255, 255, 255 };
 
 extern u8 * configFileData;
 extern int configFileSize;
 extern u8 * infoFileData;
 extern int infoFileSize;
-extern char configBasePath[ISFS_MAXPATH];
 
 const char* GetFileName(const char* path)
 {
@@ -70,13 +76,7 @@ void ToLower(const char* str, char* buf)
 void loadInfoFile()
 {
     char infoPath[ISFS_MAXPATH];
-    memset(infoPath, 0, sizeof(infoPath));
-
-    size_t len = strlen(configBasePath);
-    if (len && configBasePath[len - 1] == '/')
-        snprintf(infoPath, sizeof(infoPath), "%sinfo.xml", configBasePath);
-    else
-        snprintf(infoPath, sizeof(infoPath), "%s/info.xml", configBasePath);
+    snprintf(infoPath, sizeof(infoPath), "%s/info.xml", codesBasePath);
 
     FileHolder infoFile(infoPath, "r");
     if (infoFile.IsOpen())
@@ -89,5 +89,52 @@ void loadInfoFile()
 
         infoFile.FRead(infoFileData, infoFileSize, 1);
         infoFile.FClose();
+
+        tinyxml2::XMLDocument doc;
+        if (doc.Parse((char*)infoFileData, infoFileSize) == tinyxml2::XML_SUCCESS)
+        {
+            tinyxml2::XMLElement* root = doc.RootElement();
+            if (root)
+            {
+                tinyxml2::XMLElement* game = root->FirstChildElement("game");
+                if (game)
+                {
+                    tinyxml2::XMLElement* gameVer = game->FirstChildElement("version");
+                    if (gameVer && gameVer->GetText())
+                    {
+                        strncpy(gameVersionStr, gameVer->GetText(), sizeof(gameVersionStr) - 1);
+                        gameVersion = (f32)atof(gameVersionStr);
+                    }
+                    tinyxml2::XMLElement* gameName = game->FirstChildElement("name");
+                    if (gameName && gameName->GetText())
+                        strncpy(projectName, gameName->GetText(), sizeof(projectName) - 1);
+                }
+
+                tinyxml2::XMLElement* launcher = root->FirstChildElement("launcher");
+                if (launcher)
+                {
+                    tinyxml2::XMLElement* colorElem = launcher->FirstChildElement("selectionColor");
+                    if (colorElem)
+                    {
+                        int r = selectionColor.r, g = selectionColor.g, b = selectionColor.b;
+                        colorElem->QueryIntAttribute("r", &r);
+                        colorElem->QueryIntAttribute("g", &g);
+                        colorElem->QueryIntAttribute("b", &b);
+                        selectionColor = (GXColor){ (u8)r, (u8)g, (u8)b};
+                    }
+
+                    tinyxml2::XMLElement* music = launcher->FirstChildElement("musicPath");
+                    if (music && music->GetText())
+                        strncpy(infoMusicPath, music->GetText(), sizeof(infoMusicPath) - 1);
+
+
+                    tinyxml2::XMLElement* urlElem = launcher->FirstChildElement("updateUrl");
+                    if (urlElem && urlElem->GetText())
+                        strncpy(updateUrl, urlElem->GetText(), sizeof(updateUrl) - 1);
+
+
+                }
+            }
+        }
     }
 }

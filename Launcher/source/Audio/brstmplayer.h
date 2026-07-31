@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "..\Graphics\FreeTypeGX.h"
-#include "..\Graphics\video.h"
+#include "../Graphics/FreeTypeGX.h"
+#include "../Graphics/video.h"
 
 extern FreeTypeGX *fontSystem[];
 

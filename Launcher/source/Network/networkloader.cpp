@@ -14,8 +14,9 @@
 #include <wchar.h>
 
 #include "http.h"
-#include "..\Patching\tinyxml2.h"
-#include "..\IOSLoader\sys.h"
+#include "../Patching/tinyxml2.h"
+#include "../IOSLoader/sys.h"
+#include "../Common.h"
 
 static lwp_t networkThread = LWP_THREAD_NULL;
 void * networkThreadFunction();
@@ -125,7 +126,9 @@ void * networkThreadFunction()
 		char * buffer = NULL;
 		f32 progress;
 		swprintf(newsText, 4096, L"Downloading news...");
-		char link[] = "https://launcher.brawlminus.net/projplus/updater/update.xml"; 
+		char link[512];
+		strncpy(link, updateUrl, sizeof(link) - 1);
+		link[sizeof(link) - 1] = '\0'; 
 		bufferSize = downloadFileToBuffer(link, &buffer, NULL, networkThreadCancelRequested, progress);
 
 		if (bufferSize > 0)

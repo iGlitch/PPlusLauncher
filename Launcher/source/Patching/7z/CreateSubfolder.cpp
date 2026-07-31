@@ -1,6 +1,6 @@
 #include <string.h>
 #include <malloc.h>
-#include <sys\dir.h>
+#include <sys/dir.h>
 #include <debug.h>
 #include "CreateSubfolder.h"
 

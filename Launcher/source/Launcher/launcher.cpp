@@ -17,9 +17,9 @@
 #include "disc.h"
 #include "wdvd.h"
 #include "video_tinyload.h"
+#include "../Common.h"
 
 /* ---------- Paths & ID ---------- */
-#define GAMECONFIG   "sd:/Project+/gc.txt"
 #define Disc_ID      ((vu32*)0x80000000)
 
 /* ---------- Global config/state (kept from your original) ---------- */
@@ -114,15 +114,21 @@ static void sd_copy_gameconfig(char *gameid)
     tempgameconf[defaultgameconfig_size] = '\n';
     tempgameconfsize = defaultgameconfig_size + 1;
 
-    fp = fopen(GAMECONFIG, "rb");
+    bool fileLoaded = false;
+    char configPath[ISFS_MAXPATH];
+
+    snprintf(configPath, sizeof(configPath), "%s/gc.txt", codesBasePath);
+    fp = fopen(configPath, "rb");
     if (fp) {
         fseek(fp, 0, SEEK_END);
         filesize = ftell(fp);
         fseek(fp, 0, SEEK_SET);
         ret = fread((void*)tempgameconf + tempgameconfsize, 1, filesize, fp);
         fclose(fp);
-        if (ret == filesize)
+        if (ret == filesize) {
             tempgameconfsize += filesize;
+            fileLoaded = true;
+        }
     }
 
     /* Remove non-ASCII */
@@ -245,12 +251,13 @@ static void sd_copy_gameconfig(char *gameid)
                 }
                 if (strncasecmp("language", parsebuffer, 8) == 0 && strlen(parsebuffer) == 8) {
                     u32 lg; if (sscanf(tempgameconf + i, " = %u", &lg) == 1) {
-                        if (lg == 0) {
+                        // Language matches ELanguage: 0-9 = JPN,ENG,GER,FRE,SPA,ITA,DUT,SCH,TCH,KOR, 10 = system default
+                        if (lg == 10) {
                             if (config_bytes[0] != 0xCD) configwarn |= 2;
                             config_bytes[0] = 0xCD;
-                        } else if (lg > 0 && lg <= 10) {
-                            if (config_bytes[0] != lg - 1) configwarn |= 2;
-                            config_bytes[0] = lg - 1;
+                        } else if (lg <= 9) {
+                            if (config_bytes[0] != lg) configwarn |= 2;
+                            config_bytes[0] = lg;
                         }
                     }
                 }
@@ -273,11 +280,11 @@ static void sd_copy_codes(char *filename)
     u32 ret, filesize;
     char filepath[256];
 
-    DIR *pdir = opendir("/Project+/");
+    DIR *pdir = opendir(codesBasePath);
     if (pdir == NULL) { codes_state = 1; return; }
     closedir(pdir);
 
-    sprintf(filepath, "sd:/Project+/%s.gct", filename);
+    snprintf(filepath, sizeof(filepath), "%s/%s.gct", codesBasePath, filename);
     fp = fopen(filepath, "rb");
     if (!fp) { codes_state = 1; return; }
 
@@ -322,10 +329,10 @@ void LaunchTitle()
         // Where the Ocarina code list will live in MEM1
         codelist = (u8 *)0x800028B8;
 
-        // Build default config and (optionally) merge sd:/Project+/gc.txt if present
-        sd_copy_gameconfig(gameidbuffer);  // safe if gc.txt missing
+        // Build default config and (optionally) merge gameconfig.txt if present
+        sd_copy_gameconfig(gameidbuffer);  // safe if gameconfig.txt missing
 
-        // Try to load sd:/Project+/<GAMEID>.gct; if missing, we’ll just launch without codes
+        // Try to load codespath/<GAMEID>.gct; if missing, we’ll just launch without codes
         sd_copy_codes(gameidbuffer);
 
         __io_wiisd.shutdown();

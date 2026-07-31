@@ -1,0 +1,21 @@
+# colfmt values:
+#  0 = GX_TF_I4     (4-bit grayscale)
+#  1 = GX_TF_I8     (8-bit grayscale)
+#  2 = GX_TF_IA4    (4-bit grayscale + 4-bit alpha)
+#  3 = GX_TF_IA8    (8-bit grayscale + 8-bit alpha)
+#  4 = GX_TF_RGB565 (16-bit RGB, no alpha)
+#  5 = GX_TF_RGB5A3 (16-bit RGB + 3-bit alpha)
+#  6 = GX_TF_RGBA8  (32-bit RGBA, full quality)
+# 14 = GX_TF_CMPR   (DXT1 compression, smallest size)
+
+<filepath="logo.png" id="logo" colfmt=5 width=180 height=60 />
+<filepath="backgroundtile.png" id="backgroundtile" colfmt=14 width=256 height=256 />
+<filepath="stylishm.png" id="stylishm" colfmt=3 width=316 height=341 />
+<filepath="en_menu_play.png" id="en_menu_play" colfmt=2 width=78 height=33 />
+<filepath="en_menu_update.png" id="en_menu_update" colfmt=2 width=113 height=33 />
+<filepath="en_menu_addons.png" id="en_menu_addons" colfmt=2 width=113 height=33 />
+<filepath="en_menu_settings.png" id="en_menu_settings" colfmt=2 width=140 height=33 />
+<filepath="en_menu_exit.png" id="en_menu_exit" colfmt=2 width=68 height=33 />
+<filepath="addon_installed.png" id="addon_installed" colfmt=5 width=32 height=32 />
+<filepath="addon_conflict.png" id="addon_conflict" colfmt=5 width=32 height=32 />
+<filepath="addon_not_installed.png" id="addon_not_installed" colfmt=5 width=32 height=32 />

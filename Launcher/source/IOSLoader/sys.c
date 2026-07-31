@@ -68,7 +68,7 @@ bool ModeChecked = false;
 bool DolphinMode = false;
 bool IsDolphin(void)
 {
-	return false;
+	return false; // skip dolphin detection
 	if (ModeChecked)
 		return DolphinMode;
 

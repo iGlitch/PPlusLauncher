@@ -10,21 +10,22 @@
 #include <di/di.h>
 #include "ApplyPatch.h"
 #include "Patcher.h"
-#include "DVDISO.h"
-#include "7z\7ZipFile.h"
+//#include "DVDISO.h"  // Disc loading moved to loader.dol
+#include "7z/7ZipFile.h"
 #include "FrozenMemories.h"
-#include "7z\CreateSubfolder.h"
+#include "7z/CreateSubfolder.h"
 #include "tinyxml2.h"
 #include "../FileHolder.h"
 #include "../Common.h"
 #include "md5.h"
-#include "../Launcher/wdvd.h"
-#include "../Launcher/disc.h"
+//#include "../Launcher/wdvd.h"  // Disc loading moved to loader.dol
+//#include "../Launcher/disc.h"   // Disc loading moved to loader.dol
 
-extern "C"{
-#include "fst_J.h"
-#include "fst_U.h"
-}
+// Disc FST includes commented out - disc loading moved to loader.dol
+//extern "C"{
+//#include "fst_J.h"
+//#include "fst_U.h"
+//}
 using namespace tinyxml2;
 
 
@@ -75,6 +76,7 @@ void WriteHash(const char* src, char result[32])
 }
 
 
+/* Disc system code commented out - disc loading moved to loader.dol
 static struct {
 	u32 offset;
 	u32 type;
@@ -85,8 +87,9 @@ static struct {
 	u32 offset;
 	u32 pad[6];
 } part_table_info ATTRIBUTE_ALIGN(32);
-
+*/
 bool isDiscSystemPrepared = false;
+/* Disc system functions commented out - disc loading moved to loader.dol
 bool prepareDiscSystem(wchar_t * sCurrentInfoText)
 {
 	//get partition info
@@ -122,7 +125,9 @@ void releaseDiscSystem()
 	WDVD_Reset();
 	isDiscSystemPrepared = false;
 }
+*/
 
+/* Disc FST search functions commented out - disc loading moved to loader.dol
 FileEntry searchDiscFST(const char* file)
 {
 	static FileEntry dummy;
@@ -185,6 +190,7 @@ int getSizeFromFST(const char* file)
 	FileEntry result = searchDiscFST(file);
 	return result.Len == UINT_MAX ? -1 : (int)result.Len;
 }
+*/
 
 bool PMPatchVerify(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForceCancel, f32 &fProgressPercentage)
 {
@@ -540,6 +546,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 			}
 
 			u8 * sourceFileBuffer;
+			/* Disc loading code commented out - disc loading moved to loader.dol
 			if (isDVD)
 			{
 				if (!isDiscSystemPrepared)
@@ -576,6 +583,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 
 			}
 			else
+			*/
 			{
 
 				FILE * fSource = fopen(sourceFile, "rb");
@@ -692,7 +700,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 		}
 		else if (strcasecmp(patchMethod, "add") == 0)
 		{
-			//<file method="add" updateFile="info/portrite/InfFace127.brres" destinationFile="/project+/pf/info/portrite/InfFace127.brres" destinationMD5="817fea2c2cae0f775ac9d3bbe3fb229c"/>
+			//<file method="add" updateFile="info/portrite/InfFace127.brres" destinationFile="/codespath/pf/info/portrite/InfFace127.brres" destinationMD5="817fea2c2cae0f775ac9d3bbe3fb229c"/>
 			const char * updateFile = cur->Attribute("updateFile");
 			const char * destinationFile = cur->Attribute("destinationFile");
 			const char * destinationMD5 = cur->Attribute("destinationMD5");
@@ -805,6 +813,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 
 	//resumeW.FClose();
 	free(xmlFile);
+	/* Disc system release commented out - disc loading moved to loader.dol
 	if (isDiscSystemPrepared)
 	{
 		fProgressPercentage = 0.0f;
@@ -812,6 +821,7 @@ bool PMPatch(const char* sPatchFilePath, wchar_t * sCurrentInfoText, bool &bForc
 		releaseDiscSystem();
 		fProgressPercentage = 1.0f;
 	}
+	*/
 	if (bForceCancel == true)
 		return false;
 	f32 value = 1.0f;

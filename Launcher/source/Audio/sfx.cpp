@@ -1,9 +1,9 @@
 #include <asndlib.h>
 #include <ogc/audio.h>
 #include "sfx.h"
-const u32	sfx_select_pcm_size; 
-const u32	sfx_confirm_pcm_size; 
-const u32	sfx_back_pcm_size;
+#include "sfx_select_pcm.h"
+#include "sfx_confirm_pcm.h"
+#include "sfx_back_pcm.h"
 bool sfxEnabled = false;
 void SFX_Init()
 {

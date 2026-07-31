@@ -6,19 +6,19 @@ extern "C" {
 
 #include <gccore.h>
 
-void loadTextures();
+void setTexturesBasePath(const char *exePath);
+int loadTextures();
+void unloadTextures();
+bool isTexturesLoaded();
 
 extern GXTexObj logoTexture;
-extern GXTexObj menuAboutTexture;
-extern GXTexObj menuBackTexture;
-extern GXTexObj menuExitTexture;
-extern GXTexObj menuInstallTexture;
-extern GXTexObj menuInstallChannelTexture;
+extern GXTexObj backgroundTileTexture;
+extern GXTexObj stylishmTexture;
 extern GXTexObj menuPlayTexture;
-extern GXTexObj menuRepairFilesTexture;
-extern GXTexObj menuToolsTexture;
 extern GXTexObj menuUpdateTexture;
 extern GXTexObj menuAddonsTexture;
+extern GXTexObj menuSettingsTexture;
+extern GXTexObj menuExitTexture;
 extern GXTexObj addonInstalled;
 extern GXTexObj addonConflict;
 extern GXTexObj addonNotInstalled;

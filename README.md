@@ -1,24 +1,33 @@
-========================================================================
+![](https://github.com/iGlitch/BrawlModLauncher/blob/main/Launcher/textures/logo.png)
 
+# Brawl Mod Launcher
 
-    メイクファイル プロジェクト: Launcher プロジェクトの概要
-    
-    
-========================================================================
+Brawl Mod Launcher is a Wii homebrew application for loading Super Smash Bros. Brawl mods such as Project+ from a USB drive or Brawl disc. It lets you install and manage mod addons, check for updates, and configure boot options including the load source, video mode, aspect ratio, language, and loader IOS. A copy of Super Smash Bros. Brawl is required to play mods.
 
-この Launcher プロジェクトは、AppWizard により作成されました。
+--------------------------------
 
-このファイルには、Launcher プロジェクトを構成する各ファイルの内容の概略が記述されています。
+Visit the [wiki](https://github.com/iGlitch/BrawlModLauncher/wiki) for in depth information on addons, customization, update patches, settings, etc.
 
+--------------------------------
 
-Launcher.vcxproj
-    これは、アプリケーション ウィザードを使用して生成された VC++ プロジェクトのメイン プロジェクト ファイルです。ファイルを生成した Visual C++ のバージョンに関する情報と、アプリケーション ウィザードで選択されたプラットフォーム、構成、およびプロジェクト機能に関する情報が含まれています。
-
-Launcher.vcxproj.filters
-    これは、アプリケーション ウィザードで生成された VC++ プロジェクトのフィルター ファイルです。このファイルには、プロジェクト内のファイルとフィルターとの間の関連付けに関する情報が含まれています。この関連付けは、特定のノードで同様の拡張子を持つファイルのグループ化を示すために IDE で使用されます (たとえば、".cpp" ファイルは "ソース ファイル" フィルターに関連付けられています)。
-
-このプロジェクトは、ウィザードで入力したコマンドを呼び出すことにより、Visual Studio からビルド/クリーン/再ビルドできます。ビルド コマンドには、nmake などの任意のツールを使用できます。
-
-このプロジェクトにはファイルが含まれないため、ソリューション エクスプローラーには何も表示されません。
-
-/////////////////////////////////////////////////////////////////////////////
+### Features
+- Automatically load the game from a USB drive or disc
+- Update the game from your Wii console via the internet
+- Make your own addons to easily swap around files with a click of a button.
+- Settings menu
+    - Load Method
+    - Autoboot
+    - Video mode
+    - Deflicker Filter
+    - Aspect Ratio
+    - Game Language
+    - Loader IOS
+    - USB Port
+    - Multiple Partitions
+    - EmuNAND Save Mode
+    - EmuNAND Save Path
+    - Debug
+    - Reset to Defaults
+- Configured to support NTSC Brawl on PAL Wii out of the box
+- Patches Wiimmfi
+- Codes path, textures, colors, update url, version number, music, and settings are all externally stored and are easy to customize for custom builds.
